@@ -69,7 +69,7 @@ body.admin-on .hdr{top:38px}
 /* SETTINGS MODAL */
 #settings-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;display:none;align-items:center;justify-content:center}
 #settings-modal.on{display:flex}
-.settings-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);padding:28px;width:500px;max-width:90vw;max-height:85vh;overflow-y:auto}
+.settings-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);padding:28px;width:600px;max-width:92vw;max-height:85vh;overflow-y:auto}
 .settings-box h3{margin-bottom:16px;font-size:16px;display:flex;align-items:center;gap:8px}
 .s-group{margin-bottom:16px}
 .s-group-title{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--purple-l);font-weight:600;margin-bottom:8px}
@@ -80,7 +80,8 @@ body.admin-on .hdr{top:38px}
 .s-input-sm{width:80px;flex:none}
 .s-hint{font-size:9px;color:var(--tx-d);margin-top:-4px;margin-bottom:8px;padding-left:120px}
 .s-team-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.s-team-row input{flex:1}
+.s-team-row input[data-team-idx]{flex:1;min-width:80px}
+.s-team-row input[data-team-supporting]{flex:1.6;min-width:0;font-size:11px}
 .s-team-color{width:30px;height:30px;border:1px solid var(--bd);border-radius:4px;cursor:pointer;padding:0}
 .s-team-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0 4px}
 .s-add-btn{background:var(--sf3);border:1px solid var(--bd);color:var(--blue-l);padding:6px 12px;border-radius:var(--r-s);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;margin-top:4px}
@@ -850,9 +851,12 @@ function closeSettings(){$('settings-modal').classList.remove('on')}
 function renderTeamRows(){
   var list=$('s-team-list');list.innerHTML='';
   var team=CFG.team||[];var colors=CFG.colors||{};
+  var crossMap={};(CFG.cross||[]).forEach(function(c){crossMap[c.member]=(c.projects||[]).join(', ')});
+  list.innerHTML+='<div style="display:grid;grid-template-columns:1fr 30px 1.6fr 22px;gap:6px;font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--tx-d);margin-bottom:4px;padding:0 2px"><span>Name</span><span></span><span>Supporting projects (comma-separated)</span><span></span></div>';
   for(var i=0;i<team.length;i++){
     var name=team[i],col=colors[name]||'#6C3FC5';
-    list.innerHTML+='<div class="s-team-row"><input type="text" class="s-input" value="'+name+'" data-team-idx="'+i+'"><input type="color" class="s-team-color" value="'+col+'" data-team-color="'+i+'"><button class="s-team-rm" onclick="removeTeamRow('+i+')">&times;</button></div>';
+    var supporting=crossMap[name]||'';
+    list.innerHTML+='<div class="s-team-row"><input type="text" class="s-input" value="'+name+'" data-team-idx="'+i+'"><input type="color" class="s-team-color" value="'+col+'" data-team-color="'+i+'"><input type="text" class="s-input" style="flex:1.6;min-width:0" placeholder="e.g. Dallah, KG Performing Arts" value="'+supporting.replace(/"/g,'&quot;')+'" data-team-supporting="'+i+'"><button class="s-team-rm" onclick="removeTeamRow('+i+')">&times;</button></div>';
   }
 }
 function addTeamRow(){
@@ -876,6 +880,18 @@ function applySettings(){
     newTeam.push(n);
     newColors[n]=colorInputs[i]?colorInputs[i].value:'#6C3FC5';
   }
+  // Read supporting project assignments → rebuild CFG.cross
+  var supportInputs=document.querySelectorAll('[data-team-supporting]');
+  var newCross=[];
+  for(var si=0;si<supportInputs.length;si++){
+    var sName=newTeam[si];if(!sName)continue;
+    var sVal=supportInputs[si].value.trim();
+    if(sVal){
+      var sProjects=sVal.split(',').map(function(p){return p.trim()}).filter(function(p){return p.length>0});
+      if(sProjects.length)newCross.push({member:sName,projects:sProjects});
+    }
+  }
+  CFG.cross=newCross;
   // Apply values
   CFG.fiscalYear=parseInt($('s-year').value)||new Date().getFullYear();
   // Sync header year dropdown to match settings
