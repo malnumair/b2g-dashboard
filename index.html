@@ -1830,10 +1830,18 @@ function renderTeam(){
     var tot=my.length,pv=0;for(i=0;i<my.length;i++)pv+=(my[i].val||0);
     var wp=tot?w.length/tot*100:0,scp=tot?sc.length/tot*100:0,pp=tot?p.length/tot*100:0,lp=tot?l.length/tot*100:0,cp=tot?ca.length/tot*100:0;
     var col=CFG.colors[name]||'#6C3FC5';
-    var crossProjects=crossMap[name]||[],crossMatches=[];
-    if(crossProjects.length){for(var k=0;k<DATA.length;k++){var r=DATA[k];if(r.owner!==name){for(var m=0;m<crossProjects.length;m++){if(r.name.toLowerCase().indexOf(crossProjects[m].toLowerCase())>=0){crossMatches.push(r);break}}}}}
+    var crossProjects=crossMap[name]||[],crossMatchMap={};
+    if(crossProjects.length){for(var k=0;k<DATA.length;k++){var r=DATA[k];if(r.owner!==name){for(var m=0;m<crossProjects.length;m++){if(r.name.toLowerCase().indexOf(crossProjects[m].toLowerCase())>=0){if(!crossMatchMap[crossProjects[m]])crossMatchMap[crossProjects[m]]=r;break}}}}}
     var crossHtml='';
-    if(crossMatches.length){crossHtml='<div class="cross-section"><div class="cross-title">Also Supporting</div>';for(var x=0;x<crossMatches.length;x++){crossHtml+='<div class="cross-item"><span dir="auto">'+esc(crossMatches[x].name)+'</span><span class="cross-badge">'+esc(crossMatches[x].owner)+'\'s</span><span style="font-weight:600">'+(crossMatches[x].tbc?'TBC':sarS(crossMatches[x].val))+'</span></div>'}crossHtml+='</div>'}
+    if(crossProjects.length){
+      crossHtml='<div class="cross-section"><div class="cross-title">Also Supporting</div>';
+      for(var x=0;x<crossProjects.length;x++){
+        var cp=crossProjects[x],cm=crossMatchMap[cp];
+        if(cm){crossHtml+='<div class="cross-item"><span dir="auto">'+esc(cm.name)+'</span><span class="cross-badge">'+esc(cm.owner)+'\'s</span><span style="font-weight:600">'+(cm.tbc?'TBC':sarS(cm.val))+'</span></div>';}
+        else{crossHtml+='<div class="cross-item"><span dir="auto">'+esc(cp)+'</span><span style="font-size:10px;color:var(--tx-d);margin-left:4px">supporting</span></div>';}
+      }
+      crossHtml+='</div>';
+    }
     var activeHtml='';
     var projects=w.concat(sc);projects.sort(function(a,b){return(b.val||0)-(a.val||0)});
     if(projects.length){activeHtml='<div style="font-size:9px;color:var(--tx-m);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Active Projects</div>';for(var q=0;q<projects.length;q++){var stColor=projects[q].status==='Won'?'var(--green)':'var(--teal)';activeHtml+='<div class="t-item"><span dir="auto">'+esc(projects[q].name)+' <span style="font-size:9px;color:'+stColor+'">'+esc(projects[q].status==='Carried Over'?'Secured':projects[q].status)+'</span></span><span style="font-weight:600">'+(projects[q].tbc?'TBC':sarS(projects[q].val))+'</span></div>'}}
