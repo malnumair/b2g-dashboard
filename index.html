@@ -333,6 +333,80 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(59,130,246,.4);outline
 #refresh-btn.loading{opacity:.7;pointer-events:none}
 #refresh-btn.loading span.rbtn-txt::before{content:'↻ '}
 @keyframes spin-r{to{transform:rotate(360deg)}}
+
+/* ===== SIDEBAR LAYOUT ===== */
+body{overflow:hidden}
+.app-shell{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:210px;flex-shrink:0;background:#0B0F1A;border-right:1px solid rgba(108,63,197,.2);display:flex;flex-direction:column;height:100vh;overflow:hidden;z-index:200}
+.sb-header{padding:14px 12px 10px;border-bottom:1px solid rgba(108,63,197,.12)}
+.sb-logo-row{display:flex;align-items:center;gap:9px}
+.sb-logo-box{width:32px;height:32px;background:linear-gradient(135deg,#6C3FC5,#4F2EA0);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-logo-box svg{width:16px;height:16px}
+.sb-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#F1F5F9;line-height:1.2}
+.sb-brand-sub{font-size:9px;color:#4B5563;margin-top:1px}
+.sb-week{margin-top:10px;background:rgba(108,63,197,.07);border:1px solid rgba(108,63,197,.16);border-radius:8px;padding:7px 10px}
+.sb-week-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:#4B5563;font-weight:600;margin-bottom:2px}
+.sb-week-val{font-size:11px;color:#C4B5FD;font-weight:600}
+
+/* SIDEBAR NAV */
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-section-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#1F2937;font-weight:700;padding:8px 10px 4px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#4B5563;transition:all .15s;margin-bottom:2px;font-size:12px;font-weight:500;user-select:none;-webkit-tap-highlight-color:transparent}
+.sb-item:hover{background:rgba(108,63,197,.08);color:#94A3B8}
+.sb-item.on{background:rgba(108,63,197,.16);color:#C4B5FD}
+.sb-item.on .sb-icon{color:#8B5CF6}
+.sb-icon{width:15px;height:15px;flex-shrink:0;color:#374151;transition:color .15s}
+.sb-item:hover .sb-icon{color:#64748B}
+.sb-item-badge{margin-left:auto;background:rgba(108,63,197,.22);color:#A78BFA;font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700}
+.sb-item-badge.red{background:rgba(231,76,60,.18);color:#F87171}
+.sb-hidden-item{opacity:.35;text-decoration:line-through}
+
+/* SIDEBAR FOOTER */
+.sb-footer{padding:8px;border-top:1px solid rgba(108,63,197,.12)}
+.sb-source{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;font-size:10px;color:#4ADE80;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);cursor:default}
+.sb-source.offline{color:var(--amber);background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.12)}
+.sb-pulse{width:6px;height:6px;border-radius:50%;background:#4ADE80;flex-shrink:0;animation:sbPulse 2s infinite}
+.sb-source.offline .sb-pulse{background:var(--amber)}
+@keyframes sbPulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* CONTENT AREA */
+.content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* TOPBAR (replaces .hdr) */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#080C17;border-bottom:1px solid rgba(108,63,197,.15);flex-shrink:0;gap:10px}
+.topbar-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;color:#F1F5F9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.topbar-date{text-align:right;font-size:10px;color:#4B5563;line-height:1.5}
+.topbar-date strong{color:#94A3B8}
+
+/* SCROLLABLE MAIN */
+.content-area .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 20px;max-width:none}
+.content-area .main::-webkit-scrollbar{width:5px}
+.content-area .main::-webkit-scrollbar-track{background:transparent}
+.content-area .main::-webkit-scrollbar-thumb{background:rgba(108,63,197,.3);border-radius:3px}
+
+/* KPI CARD ACCENT STRIPS */
+.kpi-accent-1::before,.kpi-accent-2::before,.kpi-accent-3::before,.kpi-accent-4::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.kpi-accent-1::before{background:linear-gradient(90deg,#6C3FC5,#8B5CF6)}
+.kpi-accent-2::before{background:linear-gradient(90deg,#2563EB,#60A5FA)}
+.kpi-accent-3::before{background:linear-gradient(90deg,#059669,#34D399)}
+.kpi-accent-4::before{background:linear-gradient(90deg,#D97706,#FCD34D)}
+.kpi-trend-up{color:#34D399;font-size:9px;margin-top:4px}
+.kpi-trend-down{color:#F87171;font-size:9px;margin-top:4px}
+
+/* MOBILE: hide sidebar, restore scroll */
+@media(max-width:768px){
+  body{overflow:auto}
+  .app-shell{flex-direction:column;height:auto}
+  .sidebar{display:none}
+  .content-area{height:auto}
+  .content-area .main{overflow:visible;padding:14px}
+  .topbar{padding:8px 14px}
+  .topbar-title{font-size:13px}
+}
 </style>
 </head>
 <body>
