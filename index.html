@@ -1276,7 +1276,7 @@ function goTab(i){
   buildNav();
   var dots=document.querySelectorAll('.swipe-dot');
   for(var d=0;d<dots.length;d++)dots[d].classList.toggle('on',d===OV.sectionOrder.indexOf(i));
-  window.scrollTo({top:0,behavior:'smooth'});
+  var _ca=document.querySelector('.content-area .main');if(_ca)_ca.scrollTo({top:0,behavior:'smooth'});
 }
 function setupDots(){
   var html='';for(var i=0;i<6;i++)html+='<div class="swipe-dot'+(i===0?' on':'')+'" onclick="goTab(OV.sectionOrder['+i+'])"></div>';
