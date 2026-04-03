@@ -519,38 +519,56 @@ body{overflow:hidden}
 <div id="toast-wrap"></div>
 <button id="lock-btn" onclick="showPwd()" title="Settings / Admin Mode">&#9881;<span class="gear-label">Settings</span></button>
 
-<!-- ===== HEADER ===== -->
-<header class="hdr" id="hdr">
-  <div class="hdr-l">
-    <div class="hdr-logo-wrap" onclick="adminMode&&$('logo-upload').click()" title="Click to change logo (admin)">
-      <svg class="hdr-logo" id="logo-svg" viewBox="0 0 180 44" xmlns="http://www.w3.org/2000/svg" style="height:38px;width:auto">
-        <rect width="180" height="44" rx="8" fill="#000"/>
-        <circle cx="147" cy="13" r="4.8" fill="#7C6CDB"/><circle cx="158" cy="13" r="4.8" fill="#7C6CDB"/>
-        <circle cx="141.5" cy="23" r="4.8" fill="#7C6CDB"/><circle cx="152.5" cy="23" r="4.8" fill="#6C5CE7"/><circle cx="163.5" cy="23" r="4.8" fill="#6C5CE7"/>
-        <circle cx="147" cy="33" r="4.8" fill="#6C5CE7"/><circle cx="158" cy="33" r="4.8" fill="#6C5CE7"/>
-        <circle cx="152.5" cy="6" r="3.2" fill="#2ECC71"/>
-        <text x="70" y="32" fill="white" font-family="'Segoe UI','Tahoma','Arial',sans-serif" font-size="26" font-weight="700" text-anchor="middle" direction="rtl">&#1571;&#1593;&#1606;&#1575;&#1576;</text>
-      </svg>
-      <img class="hdr-logo" id="logo-img" style="display:none" alt="Logo">
-      <div class="logo-placeholder" id="logo-ph">&#128247;</div>
+<!-- ===== APP SHELL ===== -->
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo-row">
+      <div class="sb-logo-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </div>
+      <div>
+        <div class="sb-brand">B2G</div>
+        <div class="sb-brand-sub">Aanaab · <span id="sb-year">2026</span></div>
+      </div>
     </div>
-    <div class="hdr-sep"></div>
-    <div class="hdr-t">
-      <h1><span class="edt" data-ov="title">B2G Weekly Update</span></h1>
-      <span><span class="edt" data-ov="subtitle">Business Development Dashboard</span></span>
+    <div class="sb-week">
+      <div class="sb-week-lbl">Current Week</div>
+      <div class="sb-week-val" id="sb-week-val">—</div>
     </div>
   </div>
-  <div class="hdr-r">
-    <div class="hdr-date"><div id="hdr-week" style="font-weight:600;color:var(--tx)"></div><div id="hdr-ref">&mdash;</div><div id="fb-status" style="font-size:8px;color:var(--tx-d)"></div></div>
+  <nav class="sb-nav" id="sb-nav"></nav>
+  <div class="sb-footer">
+    <div class="sb-source" id="sb-source">
+      <div class="sb-pulse"></div>
+      <span id="sb-source-txt">Connecting...</span>
+    </div>
+  </div>
+</aside>
+
+<!-- CONTENT AREA -->
+<div class="content-area">
+
+<!-- ===== TOPBAR ===== -->
+<div class="topbar" id="hdr">
+  <div class="topbar-title" id="topbar-section-title">Executive Summary</div>
+  <div class="topbar-right">
+    <div class="topbar-date"><div id="hdr-week"></div><div id="hdr-ref"></div></div>
     <select class="btn" id="g-yr" onchange="applyGlobalYear()" style="padding:6px 10px;font-size:11px"><option value="">All Years</option></select>
-    <button class="btn" onclick="togglePaste()">&#128203; Paste CSV</button>
-    <button class="btn" id="refresh-btn" onclick="tryLiveRefresh()"><span class="rbtn-txt">&#8635; Refresh</span></button>
+    <button class="btn" onclick="togglePaste()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      Paste CSV
+    </button>
+    <button class="btn" id="refresh-btn" onclick="tryLiveRefresh()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      <span class="rbtn-txt">Refresh</span>
+    </button>
   </div>
-</header>
+</div>
 
 <div class="src-banner" id="src-banner"></div>
-<nav class="nav" id="nav"></nav>
-<div class="swipe-dots" id="dots"></div>
 
 <!-- DIRECTOR'S BRIEFING -->
 <div id="briefing-wrap">
@@ -657,7 +675,10 @@ body{overflow:hidden}
   <div id="custom-blocks"></div>
 </div>
 
-<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+<button class="totop" id="totop" onclick="document.querySelector('.content-area .main').scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+</div><!-- /content-area -->
+</div><!-- /app-shell -->
 
 <script>
 // ================================================================
