@@ -1047,6 +1047,7 @@ function applyAdminUI(){
     if(OV.collapsedSections[i]){if(sb)sb.classList.add('collapsed');if(btn)btn.classList.add('collapsed')}
     else{if(sb)sb.classList.remove('collapsed');if(btn)btn.classList.remove('collapsed')}
   }
+  if($('fb-status-btn'))$('fb-status-btn').style.display='inline-flex';
 }
 
 // ================================================================
@@ -1348,7 +1349,7 @@ function loadRecvPaste(){
   $('csv-paste').value='';
   showBanner('live','Receivables loaded \u00b7 '+RECV.length+' tranches');
 }
-function showBanner(type,msg){var b=$('src-banner');b.className='src-banner '+type;b.textContent=msg}
+function showBanner(type,msg){var b=$('src-banner');b.className='src-banner '+type;b.textContent=msg;var _sbSrc=document.getElementById('sb-source');var _sbTxt=document.getElementById('sb-source-txt');if(_sbSrc&&_sbTxt){var _isLive=document.getElementById('src-banner').classList.contains('live');_sbSrc.className=_isLive?'sb-source':'sb-source offline';_sbTxt.textContent=_isLive?'Live \u00b7 Google Sheets':'Offline \u00b7 Cached data';}}
 
 function processCSV(csv,isLive){
   if(typeof Papa==='undefined'){showBanner('offline','PapaParse not loaded.');return}
