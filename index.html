@@ -1235,55 +1235,80 @@ function loadLayoutJSON(e){
 // ================================================================
 // NAV + TABS (drag-reorder support)
 // ================================================================
+var SEC_ICONS=[
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+  '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'
+];
 function buildNav(){
-  var nav=$('nav');nav.innerHTML='';
+  var nav=document.getElementById('sb-nav');if(!nav)return;
+  nav.innerHTML='';
   var order=OV.sectionOrder;
+  var groupLabels={0:'Overview',3:'People & Money'};
   for(var i=0;i<order.length;i++){
     var idx=order[i];
     var hidden=OV.hiddenSections[idx];
     if(hidden&&!adminMode)continue;
     var label=getOV('sec:'+idx+':title',SEC_NAMES[idx]);
-    var tab=document.createElement('div');
-    tab.className='nav-tab'+(idx===curTab?' on':'')+(hidden?' hidden-tab':'');
-    tab.textContent=label;
-    tab.dataset.idx=idx;
-    tab.onclick=(function(ii){return function(){goTab(ii)}})(idx);
+    if(groupLabels[idx]){
+      var lbl=document.createElement('div');
+      lbl.className='sb-section-lbl';
+      lbl.textContent=groupLabels[idx];
+      nav.appendChild(lbl);
+    }
+    var item=document.createElement('div');
+    item.className='sb-item'+(idx===curTab?' on':'')+(hidden?' sb-hidden-item':'');
+    item.dataset.idx=idx;
+    item.innerHTML=SEC_ICONS[idx]+'<span>'+label+'</span>';
+    item.onclick=(function(ii){return function(){goTab(ii)}})(idx);
+    item.style.cursor='pointer';
+    if(idx===4&&RECV.length){
+      var late=RECV.filter(function(r){return r.escalate}).length;
+      if(late>0){var b=document.createElement('span');b.className='sb-item-badge red';b.textContent=late;item.appendChild(b);}
+    }
     if(adminMode){
-      tab.draggable=true;
-      tab.ondragstart=function(e){e.dataTransfer.setData('text/plain','tab:'+this.dataset.idx);this.style.opacity='.4'};
-      tab.ondragend=function(){this.style.opacity='1';document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('drag-over-left','drag-over-right')})};
-      tab.ondragover=function(e){e.preventDefault();var rect=this.getBoundingClientRect();var mid=rect.left+rect.width/2;if(e.clientX<mid)this.classList.add('drag-over-left');else this.classList.add('drag-over-right');this.classList.remove(e.clientX<mid?'drag-over-right':'drag-over-left')};
-      tab.ondragleave=function(){this.classList.remove('drag-over-left','drag-over-right')};
-      tab.ondrop=function(e){
-        e.preventDefault();this.classList.remove('drag-over-left','drag-over-right');
+      item.draggable=true;
+      item.ondragstart=function(e){e.dataTransfer.setData('text/plain','tab:'+this.dataset.idx);this.style.opacity='.4'};
+      item.ondragend=function(){this.style.opacity='1';document.querySelectorAll('.sb-item').forEach(function(t){t.classList.remove('drag-over-top','drag-over-bottom')})};
+      item.ondragover=function(e){e.preventDefault()};
+      item.ondrop=function(e){
+        e.preventDefault();
         var fromIdx=parseInt(e.dataTransfer.getData('text/plain').replace('tab:',''));
         var toIdx=parseInt(this.dataset.idx);if(isNaN(fromIdx)||fromIdx===toIdx)return;
         var arr=OV.sectionOrder.slice();var fi=arr.indexOf(fromIdx),ti=arr.indexOf(toIdx);
-        arr.splice(fi,1);var rect=this.getBoundingClientRect();var mid=rect.left+rect.width/2;
-        var newTi=arr.indexOf(toIdx);if(e.clientX>=mid)newTi++;
-        arr.splice(newTi,0,fromIdx);OV.sectionOrder=arr;buildNav();queueSave();
+        arr.splice(fi,1);arr.splice(arr.indexOf(toIdx)+1,0,fromIdx);
+        OV.sectionOrder=arr;buildNav();queueSave();
       };
     }
-    nav.appendChild(tab);
+    nav.appendChild(item);
   }
+  var wv=document.getElementById('sb-week-val');
+  if(wv){var w=document.getElementById('hdr-week');if(w)wv.textContent=w.textContent||'—';}
+  var sy=document.getElementById('sb-year');
+  if(sy)sy.textContent=CFG.fiscalYear||2026;
 }
 function goTab(i){
   curTab=i;
   for(var s=0;s<6;s++){
-    var sec=$('s-'+s),ctrl=$('sc-'+s);
-    if(sec){if(s===i){sec.classList.add('on');sec.style.display=''}else{sec.classList.remove('on');sec.style.display='none'}}
+    var sec=document.getElementById('s-'+s);
+    if(sec){if(s===i){sec.classList.add('on');sec.style.display='';}else{sec.classList.remove('on');sec.style.display='none';}}
   }
-  buildNav();
-  var dots=document.querySelectorAll('.swipe-dot');
-  for(var d=0;d<dots.length;d++)dots[d].classList.toggle('on',d===OV.sectionOrder.indexOf(i));
+  document.querySelectorAll('.sb-item').forEach(function(el){
+    el.classList.toggle('on',parseInt(el.dataset.idx)===i);
+  });
+  var tt=document.getElementById('topbar-section-title');
+  if(tt)tt.textContent=getOV('sec:'+i+':title',SEC_NAMES[i]);
   var _ca=document.querySelector('.content-area .main');if(_ca)_ca.scrollTo({top:0,behavior:'smooth'});
 }
 function setupDots(){
-  var html='';for(var i=0;i<6;i++)html+='<div class="swipe-dot'+(i===0?' on':'')+'" onclick="goTab(OV.sectionOrder['+i+'])"></div>';
-  $('dots').innerHTML=html;
+  var mainEl=document.querySelector('.content-area .main')||document.getElementById('main');
+  if(!mainEl)return;
   var sx=0;
-  $('main').addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
-  $('main').addEventListener('touchend',function(e){
+  mainEl.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+  mainEl.addEventListener('touchend',function(e){
     var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)<50)return;
     var visOrder=OV.sectionOrder.filter(function(i){return!OV.hiddenSections[i]});
     var ci=visOrder.indexOf(curTab);
@@ -2034,7 +2059,12 @@ function dragSec(e,idx){e.dataTransfer.setData('text/plain','tab:'+idx)}
   setTimeout(tryLiveRefresh,800);
   setTimeout(fetchRecv,1200);
   refreshTimer=setInterval(tryLiveRefresh,CFG.refresh*60000);
-  window.addEventListener('scroll',function(){try{$('totop').classList.toggle('show',window.scrollY>200)}catch(e){}});
+  var _mainScroll=document.querySelector('.content-area .main')||window;
+  _mainScroll.addEventListener('scroll',function(){
+    var st=this.scrollTop!==undefined?this.scrollTop:window.scrollY;
+    var btn=document.getElementById('totop');
+    if(btn)btn.classList.toggle('show',st>300);
+  });
   // Apply logo from OV if saved
   if(OV.logoSrc){$('logo-svg').style.display='none';$('logo-img').src=OV.logoSrc;$('logo-img').style.display='block'}
   // Show briefing if it has content
