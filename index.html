@@ -267,6 +267,7 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 .tag-lost{color:var(--red);background:rgba(239,68,68,.08)}
 .tag-canceled{color:var(--gray-l);background:rgba(107,114,128,.08)}
 .tag-carried{color:var(--teal);background:rgba(20,184,166,.08)}
+.tag-inactive{color:var(--gray-l);background:rgba(107,114,128,.06);border-color:rgba(107,114,128,.3)}
 .tag-stage{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border:1px solid currentColor;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
 .ts-blue{color:var(--blue);background:rgba(137,178,255,.1)}
 .ts-purple{color:var(--accent-l);background:rgba(111,82,255,.1)}
@@ -557,6 +558,28 @@ body{overflow:hidden}
 .btn-edit-row:hover{border-color:var(--accent);color:var(--accent);background:rgba(111,82,255,.08)}
 .pipe-act-th{width:50px;text-align:center}
 .pipe-act-td{text-align:center;white-space:nowrap}
+#detail-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:600;display:none;align-items:center;justify-content:center;padding:20px}
+#detail-modal.on{display:flex}
+.detail-box{background:var(--sf);border:1px solid var(--bd-l);border-radius:var(--r);width:100%;max-width:640px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s var(--ease)}
+.detail-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0;margin-bottom:16px;gap:12px}
+.detail-hdr h3{font-size:16px;font-weight:700;margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.detail-close{background:none;border:none;color:var(--tx-d);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+.detail-close:hover{color:var(--tx)}
+.detail-body{padding:0 24px 20px}
+.detail-section-title{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--purple-l);font-weight:600;margin:16px 0 8px}
+.detail-section-title:first-child{margin-top:0}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.detail-field{display:flex;flex-direction:column;gap:3px}
+.detail-field-label{font-size:10px;font-weight:600;color:var(--tx-d);text-transform:uppercase;letter-spacing:.4px}
+.detail-field-value{font-size:13px;color:var(--tx)}
+.detail-next{padding:10px 14px;background:rgba(111,82,255,.06);border:1px solid rgba(111,82,255,.15);border-radius:var(--r-s);font-size:13px;color:var(--tx);margin-top:4px}
+.detail-notes{padding:10px 14px;background:var(--sf3);border-radius:var(--r-s);font-size:12px;line-height:1.7;color:var(--tx-m);white-space:pre-wrap;margin-top:4px}
+.detail-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 24px;border-top:1px solid var(--bd)}
+.detail-edit-btn{background:var(--accent);border:none;color:#fff;padding:8px 18px;border-radius:var(--r-s);cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;transition:background var(--dur) var(--ease)}
+.detail-edit-btn:hover{background:var(--accent-d)}
+.detail-close-btn{background:var(--sf3);border:1px solid var(--bd);color:var(--tx-m);padding:8px 18px;border-radius:var(--r-s);cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;transition:all var(--dur) var(--ease)}
+.detail-close-btn:hover{background:var(--sf);color:var(--tx)}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.ao-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.topbar-right .btn-add-opp span:not(svg){display:none}}
 </style>
@@ -973,6 +996,23 @@ body{overflow:hidden}
   </div>
 </div>
 
+<div id="detail-modal">
+  <div class="detail-box">
+    <div class="detail-hdr">
+      <h3 id="dm-name"></h3>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="dm-status-tag"></span>
+        <button class="detail-close" onclick="closeDetail()" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div class="detail-body" id="dm-body"></div>
+    <div class="detail-footer">
+      <button class="detail-close-btn" onclick="closeDetail()">Close</button>
+      <button class="detail-edit-btn" id="dm-edit-btn">Edit</button>
+    </div>
+  </div>
+</div>
+
 <button class="totop" id="totop" onclick="document.querySelector('.content-area .main').scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
 </div><!-- /content-area -->
@@ -1034,6 +1074,7 @@ function saveCfg(c){try{localStorage.setItem('b2g_cfg',JSON.stringify(c))}catch(
 var CFG=getConfig();
 var APPS_SCRIPT_URL=CFG.appsScriptUrl||'';
 var editMode=false,editingRow=null;
+var detailIdx=null;
 // Chart palette constants — use instead of hardcoded hex in doChart calls
 var P={accent:'#7C5CFF',accentA:'rgba(124,92,255,.18)',accentB:'rgba(124,92,255,.5)',green:'#2EBD90',greenA:'rgba(46,189,144,.18)',red:'#F87171',amber:'#FBBF24',blue:'#93C5FD',teal:'#2DD4BF',txD:'#C4B5FD',txM:'#DDD6FE',purple:'#5B3FD4',purpleL:'#C4B5FD'};
 
@@ -1713,7 +1754,8 @@ function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g
   'carried over':'Carried Over','carriedover':'Carried Over','carry over':'Carried Over',
   // Your sheet's status values
   'active opportunity':'Pending',
-  'in active opportunity':'Pending',
+  'in active opportunity':'Inactive',
+  'inactive opportunity':'Inactive',
   'not qualified':'Lost',
   'contract signed':'Won',
   'canceled by client':'Canceled',
@@ -2109,8 +2151,60 @@ function closeAddOpp(){
   var modal=$('add-opp-modal');if(modal)modal.classList.remove('on');
   editMode=false;editingRow=null;
 }
-document.addEventListener('click',function(e){if(e.target&&e.target.id==='add-opp-modal')closeAddOpp()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAddOpp()});
+document.addEventListener('click',function(e){
+  if(e.target&&e.target.id==='add-opp-modal')closeAddOpp();
+  if(e.target&&e.target.id==='detail-modal')closeDetail();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if($('detail-modal')&&$('detail-modal').classList.contains('on')){closeDetail();return}
+    closeAddOpp();
+  }
+});
+
+function detailField(label,value){return'<div class="detail-field"><div class="detail-field-label">'+label+'</div><div class="detail-field-value">'+(value||'—')+'</div></div>'}
+
+function openDetail(allIdx){
+  var r=ALL[allIdx];if(!r)return;
+  detailIdx=allIdx;
+  $('dm-name').textContent=r.name||'—';
+  $('dm-status-tag').innerHTML=tagS(r.status,r.rawStatus);
+  var dy=days(r.date);var daysLbl=dy==null?'—':dy<=0?'Today':dy+' days';
+  $('dm-body').innerHTML=
+    '<div class="detail-section-title">Key Info</div>'+
+    '<div class="detail-grid">'+
+      detailField('Client',esc(r.client))+
+      detailField('Value (SAR)',r.tbc?'TBC':sarS(r.val))+
+      detailField('Lead Source',esc(r.channel))+
+      detailField('Probability',r.prob?tagP(r.prob):'—')+
+      detailField('Proposal Owner',r.owner?tagOwner(r.owner):'—')+
+      detailField('Contact Person',esc(r.contact))+
+    '</div>'+
+    '<div class="detail-section-title">Timeline</div>'+
+    '<div class="detail-grid">'+
+      detailField('Date Submitted',fD(r.date))+
+      detailField('Days Open',daysLbl)+
+      detailField('Expected Decision',esc(r.expDate)||'—')+
+      detailField('Awarding Date',esc(r.actDate)||'—')+
+      detailField('Cycle Time',r.cycle?r.cycle+' days':'—')+
+    '</div>'+
+    '<div class="detail-section-title">Status &amp; Risk</div>'+
+    '<div class="detail-grid">'+
+      detailField('Stage',r.stage?tagStage(r.stage):'—')+
+      detailField('Priority',r.priority?tagP(r.priority):'—')+
+      detailField('Risk',r.risk?tagP(r.risk):'—')+
+      detailField('Reason Won/Lost',esc(r.reason)||'—')+
+    '</div>'+
+    (r.next?'<div class="detail-section-title">Next Action</div><div class="detail-next">'+esc(r.next)+'</div>':'')+
+    (r.notes?'<div class="detail-section-title">Notes</div><div class="detail-notes">'+esc(r.notes)+'</div>':'');
+  $('dm-edit-btn').onclick=function(){closeDetail();openEditOpp(detailIdx)};
+  $('detail-modal').classList.add('on');
+}
+
+function closeDetail(){
+  var m=$('detail-modal');if(m)m.classList.remove('on');
+  detailIdx=null;
+}
 
 function _setSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}}
 
@@ -2345,7 +2439,7 @@ function renderPipe(){
   if(fo)all=all.filter(function(r){return r.owner===fo});
   if(fp)all=all.filter(function(r){return r.prob===fp});
 
-  var INACTIVE_ST={Won:1,Lost:1,Canceled:1,'Carried Over':1};
+  var INACTIVE_ST={Won:1,Lost:1,Canceled:1,'Carried Over':1,Inactive:1};
   var dActive,dClosed;
   if(fs){
     dActive=INACTIVE_ST[fs]?[]:all.filter(function(r){return r.status===fs});
@@ -2388,8 +2482,8 @@ function renderPipe(){
       var cells='';
       for(var c=0;c<PIPE_COLS.length;c++){if(!OV.hiddenCols['pipe:'+c])cells+=cellFns[c](r)}
       var idx=ALL.indexOf(r);
-      cells+='<td class="pipe-act-td"><button class="btn-edit-row" onclick="openEditOpp('+idx+')" title="Edit">&#9998;</button></td>';
-      return'<tr>'+cells+'</tr>';
+      cells+='<td class="pipe-act-td"><button class="btn-edit-row" onclick="event.stopPropagation();openEditOpp('+idx+')" title="Edit">&#9998;</button></td>';
+      return'<tr style="cursor:pointer" onclick="openDetail('+idx+')">'+cells+'</tr>';
     }).join('');
   }
   $('tb-p').innerHTML=buildRows(dActive);
