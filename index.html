@@ -2406,7 +2406,7 @@ function renderTeam(){
 }
 
 function renderTarget(){
-  var won=DATA.filter(function(r){return r.status==='Won'}),tv=0;
+  var won=ALL.filter(function(r){return r.status==='Won'}),tv=0;
   for(var i=0;i<won.length;i++)tv+=(won[i].val||0);
 
   // All money data sourced from Receivables sheet — only tranche amounts within the selected year
