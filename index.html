@@ -1014,7 +1014,7 @@ var FALLBACK_RECV='Project Name,Client,Owner,Contract Total (SAR),Contract Signe
 // ================================================================
 // CONFIG & STATE
 // ================================================================
-var DEFAULTS={url:'',target:40000000,fiscalYear:new Date().getFullYear(),team:[],colors:{},cross:[],refresh:5,password:'',recvUrl:'',lateDays:30,showRecv:'yes'};
+var DEFAULTS={url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6ySPs_Sh9goXWlROzcOV0OTKujNAwaDxPu249NMpTgPrNao0XYyMpNuTaVP5k6fmy_46R221aFXNx/pub?gid=992087795&single=true&output=csv',target:40000000,fiscalYear:new Date().getFullYear(),team:[],colors:{},cross:[],refresh:5,password:'',recvUrl:'',lateDays:30,showRecv:'yes'};
 function getConfig(){try{var s=localStorage.getItem('b2g_cfg');if(s){var c=Object.assign({},DEFAULTS,JSON.parse(s));if(!c.fiscalYear)c.fiscalYear=DEFAULTS.fiscalYear;if(!c.password)c.password=DEFAULTS.password;return c}return DEFAULTS}catch(e){return DEFAULTS}}
 function saveCfg(c){try{localStorage.setItem('b2g_cfg',JSON.stringify(c))}catch(e){}}
 var CFG=getConfig();
