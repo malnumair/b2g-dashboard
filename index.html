@@ -553,6 +553,10 @@ body{overflow:hidden}
 .ao-submit{background:var(--accent);border:none;color:#fff;padding:9px 20px;border-radius:var(--r-s);cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;transition:background var(--dur) var(--ease)}
 .ao-submit:hover{background:var(--accent-d)}
 .ao-submit:disabled{opacity:.6;cursor:not-allowed}
+.btn-edit-row{background:none;border:1px solid rgba(111,82,255,.25);color:var(--tx-d);border-radius:4px;cursor:pointer;padding:2px 7px;font-size:11px;line-height:1.6;transition:all 150ms;white-space:nowrap}
+.btn-edit-row:hover{border-color:var(--accent);color:var(--accent);background:rgba(111,82,255,.08)}
+.pipe-act-th{width:50px;text-align:center}
+.pipe-act-td{text-align:center;white-space:nowrap}
 @media(max-width:600px){.ao-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.topbar-right .btn-add-opp span:not(svg){display:none}}
 </style>
@@ -860,7 +864,7 @@ body{overflow:hidden}
 <div id="add-opp-modal">
   <div class="add-opp-box">
     <div class="add-opp-hdr">
-      <h3>Add Opportunity</h3>
+      <h3 id="ao-modal-title">Add Opportunity</h3>
       <button class="add-opp-close" onclick="closeAddOpp()" aria-label="Close">&times;</button>
     </div>
     <form id="add-opp-form" onsubmit="submitAddOpp(event)">
@@ -1019,6 +1023,7 @@ function getConfig(){try{var s=localStorage.getItem('b2g_cfg');if(s){var c=Objec
 function saveCfg(c){try{localStorage.setItem('b2g_cfg',JSON.stringify(c))}catch(e){}}
 var CFG=getConfig();
 var APPS_SCRIPT_URL=CFG.appsScriptUrl||'';
+var editMode=false,editingRow=null;
 // Chart palette constants — use instead of hardcoded hex in doChart calls
 var P={accent:'#7C5CFF',accentA:'rgba(124,92,255,.18)',accentB:'rgba(124,92,255,.5)',green:'#2EBD90',greenA:'rgba(46,189,144,.18)',red:'#F87171',amber:'#FBBF24',blue:'#93C5FD',teal:'#2DD4BF',txD:'#C4B5FD',txM:'#DDD6FE',purple:'#5B3FD4',purpleL:'#C4B5FD'};
 
@@ -2075,13 +2080,12 @@ function renderAll(){
 // ================================================================
 function openAddOpp(){
   var modal=$('add-opp-modal');if(!modal)return;
-  // Default date to today
+  editMode=false;editingRow=null;
+  $('ao-modal-title').textContent='Add Opportunity';
   var iso=new Date().toISOString().slice(0,10);
   $('ao-date').value=iso;
-  // Populate owner dropdown from CFG.team
   var owSel=$('ao-owner');
   owSel.innerHTML=(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
-  // Reset form then re-set date (reset clears it)
   $('add-opp-form').reset();
   $('ao-date').value=iso;
   $('ao-status-msg').textContent='';
@@ -2093,32 +2097,84 @@ function openAddOpp(){
 }
 function closeAddOpp(){
   var modal=$('add-opp-modal');if(modal)modal.classList.remove('on');
+  editMode=false;editingRow=null;
 }
-// Backdrop click closes modal
 document.addEventListener('click',function(e){if(e.target&&e.target.id==='add-opp-modal')closeAddOpp()});
-// ESC key closes modal
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAddOpp()});
+
+function _setSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}}
+
+function openEditOpp(allIdx){
+  var r=ALL[allIdx];if(!r)return;
+  var modal=$('add-opp-modal');if(!modal)return;
+  editMode=true;editingRow=r;
+  $('ao-modal-title').textContent='Edit Opportunity';
+  $('ao-submit-txt').textContent='Save Changes';
+  var owSel=$('ao-owner');
+  owSel.innerHTML=(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
+  $('ao-name').value=r.name||'';
+  $('ao-client').value=r.client||'';
+  $('ao-contact').value=r.contact||'';
+  $('ao-date').value=r.dateStr||'';
+  $('ao-value').value=r.val||'';
+  $('ao-stage').value=r.stage||'';
+  $('ao-next').value=r.next||'';
+  $('ao-notes').value=r.notes||'';
+  _setSelVal('ao-prob',r.prob);
+  _setSelVal('ao-status',r.status);
+  _setSelVal('ao-channel',r.channel);
+  _setSelVal('ao-owner',r.owner);
+  _setSelVal('ao-priority',r.priority);
+  _setSelVal('ao-risk',r.risk);
+  $('ao-status-msg').textContent='';
+  $('ao-submit-btn').disabled=false;
+  modal.classList.add('on');
+  setTimeout(function(){$('ao-name').focus()},80);
+}
 
 function submitAddOpp(e){
   e.preventDefault();
-  var btn=$('ao-submit-btn'),txt=$('ao-submit-txt'),statusMsg=$('ao-status-msg');
   var nameVal=$('ao-name').value.trim(),clientVal=$('ao-client').value.trim();
   if(!nameVal){$('ao-name').focus();return}
   if(!clientVal){$('ao-client').focus();return}
+  var dateStr=$('ao-date').value,valStr=$('ao-value').value;
 
-  var dateStr=$('ao-date').value;
-  var valStr=$('ao-value').value;
+  if(editMode&&editingRow){
+    // Update row in place
+    var r=editingRow;
+    r.name=nameVal;r.client=clientVal;r.contact=$('ao-contact').value.trim();
+    r.dateStr=dateStr;r.date=parseD(dateStr);
+    r.valStr=valStr;r.val=parseV(valStr);r.tbc=!valStr;
+    r.prob=$('ao-prob').value;r.stage=$('ao-stage').value.trim()||'Submitted';
+    r.status=normS($('ao-status').value);r.rawStatus=$('ao-status').value;
+    r.channel=$('ao-channel').value;r.owner=$('ao-owner').value;
+    r.next=$('ao-next').value.trim();r.priority=$('ao-priority').value;
+    r.risk=$('ao-risk').value;r.notes=$('ao-notes').value.trim();
+    saveFullData();renderAll();
+    toast('Opportunity updated'+(APPS_SCRIPT_URL?' — syncing to sheet...':' (local only)'),'info',2500);
+    closeAddOpp();
+    if(APPS_SCRIPT_URL){
+      var upPayload={action:'update',rowNum:r.rowNum,
+        proposalName:r.name,client:r.client,contactPerson:r.contact,
+        dateSubmitted:r.dateStr,valueSAR:r.val||'',probability:r.prob,
+        stage:r.stage,status:r.status,channel:r.channel,owner:r.owner,
+        nextAction:r.next,priority:r.priority,risk:r.risk,notes:r.notes};
+      fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(upPayload)})
+        .then(function(){toast('Sheet updated','ok',3000)})
+        .catch(function(err){console.warn('Apps Script update failed:',err);toast('Local update saved. Sheet sync failed.','warn',5000)});
+    }
+    return;
+  }
+
   var newRow={
     rowNum:'',name:nameVal,client:clientVal,contact:$('ao-contact').value.trim(),
     dateStr:dateStr,date:parseD(dateStr),valStr:valStr,val:parseV(valStr),tbc:!valStr,
     prob:$('ao-prob').value,stage:$('ao-stage').value.trim()||'Submitted',
-    status:normS($('ao-status').value),channel:$('ao-channel').value,
-    expDate:'',actDate:'',cycle:'',reason:'',owner:$('ao-owner').value,
-    next:$('ao-next').value.trim(),priority:$('ao-priority').value,
-    risk:$('ao-risk').value,notes:$('ao-notes').value.trim()
+    status:normS($('ao-status').value),rawStatus:$('ao-status').value,
+    channel:$('ao-channel').value,expDate:'',actDate:'',cycle:'',reason:'',
+    owner:$('ao-owner').value,next:$('ao-next').value.trim(),
+    priority:$('ao-priority').value,risk:$('ao-risk').value,notes:$('ao-notes').value.trim()
   };
-
-  // Optimistic UI update
   ALL.push(newRow);
   var fy=parseInt($('g-yr').value)||(CFG.fiscalYear||new Date().getFullYear());
   if(newRow.date&&newRow.date.getFullYear()===fy){DATA.push(newRow)}
@@ -2126,15 +2182,12 @@ function submitAddOpp(e){
   saveFullData();renderAll();
   toast('Opportunity added'+(APPS_SCRIPT_URL?' — syncing to sheet...':' locally'),'info',2500);
   closeAddOpp();
-
-  // Write-back to Google Sheets via Apps Script
   if(APPS_SCRIPT_URL){
-    var payload={
+    var payload={action:'insert',
       proposalName:newRow.name,client:newRow.client,contactPerson:newRow.contact,
       dateSubmitted:newRow.dateStr,valueSAR:newRow.val||'',probability:newRow.prob,
       stage:newRow.stage,status:newRow.status,channel:newRow.channel,owner:newRow.owner,
-      nextAction:newRow.next,priority:newRow.priority,risk:newRow.risk,notes:newRow.notes
-    };
+      nextAction:newRow.next,priority:newRow.priority,risk:newRow.risk,notes:newRow.notes};
     fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
       .then(function(){toast('Saved to Google Sheet','ok',3000)})
       .catch(function(err){console.warn('Apps Script POST failed:',err);toast('Local update saved. Sheet sync failed — check Apps Script URL.','warn',5000)});
@@ -2274,6 +2327,7 @@ function renderPipe(){
     th.onclick=function(e){if(!adminMode){doSort(col.k)}};
     hdr.appendChild(th);
   });
+  var acth=document.createElement('th');acth.className='pipe-act-th';hdr.appendChild(acth);
 
   var q=($('f-q').value||'').toLowerCase(),fs=$('f-st').value,fo=$('f-ow').value,fp=$('f-pr').value;
   var d=DATA.filter(function(r){return r.status!=='Lost'&&r.status!=='Canceled'});
@@ -2306,6 +2360,8 @@ function renderPipe(){
   $('tb-p').innerHTML=d.map(function(r){
     var cells='';
     for(var c=0;c<PIPE_COLS.length;c++){if(!OV.hiddenCols['pipe:'+c])cells+=cellFns[c](r)}
+    var idx=ALL.indexOf(r);
+    cells+='<td class="pipe-act-td"><button class="btn-edit-row" onclick="openEditOpp('+idx+')" title="Edit">&#9998;</button></td>';
     return'<tr>'+cells+'</tr>';
   }).join('');
 }
