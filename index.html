@@ -2196,7 +2196,6 @@ function renderKPI(){
     {id:'won',l:'Won Revenue',v:won.length,s:sar(wV),c:'var(--green)'},
     {id:'secured',l:'Secured (Carried Over)',v:secured.length,s:sar(sV),c:'var(--teal)'},
     {id:'pending',l:'Active Pipeline',v:pipeline.length,s:sarS(pV)+' value',c:'var(--blue)'},
-    {id:'leads',l:'Leads (No Value Yet)',v:ldCount,s:'TBC \u2014 awaiting quote',c:'var(--amber)'},
     {id:'winrate',l:'Win Rate',v:wr+'%',s:won.length+'/'+dec+' decided (excl. Canceled)',c:'var(--green)'},
     {id:'gap',l:'Gap to '+sarM(CFG.target)+' Target',v:gapV>0?sarS(gapV):'On Track',s:gapV>0?'remaining to reach target':'Target met!',c:gapV>0?'var(--red)':'var(--green)'},
   ];
@@ -2308,7 +2307,6 @@ function renderOpp(){
   var securedCount=DATA.filter(function(r){return r.status==='Carried Over'}).length;
   parts.push(active.length+' pipeline');
   if(securedCount)parts.push(securedCount+' secured');
-  if(leads.length)parts.push(leads.length+' leads');
   if(disregarded.length)parts.push(disregarded.length+' stale');
   if(carried.length)parts.push(carried.length+' future');
   $('b-opp').textContent=parts.join(' + ');
@@ -2320,15 +2318,8 @@ function renderOpp(){
     return'<tr class="'+(hi?'hi':'')+'" style="'+priStyle+'"><td style="color:var(--tx-d);font-weight:600">'+(i+1)+'</td><td dir="auto"><strong>'+esc(r.name)+'</strong></td><td>'+esc(r.client)+'</td><td style="white-space:nowrap;font-weight:700">'+sarS(r.val)+'</td><td>'+tagP(r.prob)+'</td><td>'+esc(r.owner)+'</td><td style="white-space:nowrap">'+fD(r.date)+'</td><td>'+(dy!=null?dy+' days':'\u2014')+'</td><td style="white-space:nowrap">'+esc(r.expDate)+'</td><td style="max-width:200px;font-size:10px">'+esc(r.next)+'</td></tr>';
   }).join('');
 
-  // Leads section (TBC / no value)
   var lw=$('leads-wrap');
-  if(leads.length){
-    lw.innerHTML='<div style="margin-top:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:14px;font-weight:700;color:var(--amber)">Leads / Pre-Pipeline</span><span class="badge">'+leads.length+' proposals</span></div>'+
-      '<p style="font-size:10px;color:var(--tx-d);margin-bottom:8px">Proposals without a confirmed commercial value (TBC). Once a value is submitted, they move to Pipeline above.</p>'+
-      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>Proposal</th><th>Client</th><th>Prob</th><th>Owner</th><th>Channel</th><th>Next Action</th></tr></thead><tbody>'+
-      leads.map(function(r,i){return'<tr><td style="color:var(--tx-d);font-weight:600">'+(i+1)+'</td><td dir="auto"><strong>'+esc(r.name)+'</strong></td><td>'+esc(r.client)+'</td><td>'+tagP(r.prob)+'</td><td>'+esc(r.owner)+'</td><td>'+esc(r.channel)+'</td><td style="font-size:10px">'+esc(r.next)+'</td></tr>'}).join('')+
-      '</tbody></table></div></div>';
-  }else{lw.innerHTML=''}
+  lw.innerHTML='';
 
   // Secured Revenue section (Carried Over deals in current FY)
   var securedInData=DATA.filter(function(r){return r.status==='Carried Over'});
