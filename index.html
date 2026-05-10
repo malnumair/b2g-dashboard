@@ -813,6 +813,16 @@ body{overflow:hidden}
       <select class="flt" id="f-pr" onchange="renderPipe()"><option value="">Probability</option><option>High</option><option>Medium</option><option>Low</option></select>
     </div>
     <div class="tbl-wrap"><table class="tbl" id="tbl-p"><thead><tr id="pipe-hdr"></tr></thead><tbody id="tb-p"></tbody></table></div>
+    <div id="pipe-closed-wrap" style="margin-top:24px;display:none">
+      <div class="dg-toggle open" id="pipe-closed-toggle" onclick="this.classList.toggle('open');var w=document.getElementById('pipe-closed-body');w.style.display=this.classList.contains('open')?'block':'none'" style="margin-bottom:10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--tx-m);display:flex;align-items:center;gap:6px">
+        <span class="dg-arrow" style="font-size:9px">&#9654;</span>
+        <span>Closed &amp; Inactive</span>
+        <span class="badge" id="b-pipe-closed"></span>
+      </div>
+      <div id="pipe-closed-body">
+        <div class="tbl-wrap"><table class="tbl" id="tbl-pi"><thead><tr id="pipe-hdr-i"></tr></thead><tbody id="tb-pi"></tbody></table></div>
+      </div>
+    </div>
   </div></section>
   <div class="add-block" onclick="addBlock(1)">+ Add block</div>
 
@@ -2330,15 +2340,31 @@ function renderPipe(){
   var acth=document.createElement('th');acth.className='pipe-act-th';hdr.appendChild(acth);
 
   var q=($('f-q').value||'').toLowerCase(),fs=$('f-st').value,fo=$('f-ow').value,fp=$('f-pr').value;
-  var d=DATA.filter(function(r){return r.status!=='Lost'&&r.status!=='Canceled'});
-  if(q)d=d.filter(function(r){return(r.name+r.client+r.owner+r.next).toLowerCase().indexOf(q)>=0});
-  if(fs)d=d.filter(function(r){return r.status===fs});if(fo)d=d.filter(function(r){return r.owner===fo});if(fp)d=d.filter(function(r){return r.prob===fp});
-  d.sort(function(a,b){var va,vb;switch(sortKey){case'value':va=a.val||0;vb=b.val||0;break;case'date':va=a.date?a.date.getTime():0;vb=b.date?b.date.getTime():0;break;case'days':va=days(a.date)||0;vb=days(b.date)||0;break;case'name':return sortDir*a.name.localeCompare(b.name);case'client':return sortDir*(a.client||'').localeCompare(b.client||'');case'status':return sortDir*a.status.localeCompare(b.status);case'prob':va={High:3,Medium:2,Low:1}[a.prob]||0;vb={High:3,Medium:2,Low:1}[b.prob]||0;break;case'owner':return sortDir*(a.owner||'').localeCompare(b.owner||'');case'priority':va={High:3,Medium:2,Low:1}[a.priority]||0;vb={High:3,Medium:2,Low:1}[b.priority]||0;break;case'risk':va={High:3,Medium:2,Low:1}[a.risk]||0;vb={High:3,Medium:2,Low:1}[b.risk]||0;break;case'notes':return sortDir*(a.notes||'').localeCompare(b.notes||'');default:va=a.val||0;vb=b.val||0}return sortDir*(va-vb)});
+  var all=DATA.slice();
+  if(q)all=all.filter(function(r){return(r.name+r.client+r.owner+r.next).toLowerCase().indexOf(q)>=0});
+  if(fo)all=all.filter(function(r){return r.owner===fo});
+  if(fp)all=all.filter(function(r){return r.prob===fp});
+
+  var INACTIVE_ST={Won:1,Lost:1,Canceled:1,'Carried Over':1};
+  var dActive,dClosed;
+  if(fs){
+    dActive=INACTIVE_ST[fs]?[]:all.filter(function(r){return r.status===fs});
+    dClosed=INACTIVE_ST[fs]?all.filter(function(r){return r.status===fs}):[];
+  } else {
+    dActive=all.filter(function(r){return r.status==='Pending'});
+    dClosed=all.filter(function(r){return INACTIVE_ST[r.status]});
+  }
+
+  function sortRows(arr){
+    arr.sort(function(a,b){var va,vb;switch(sortKey){case'value':va=a.val||0;vb=b.val||0;break;case'date':va=a.date?a.date.getTime():0;vb=b.date?b.date.getTime():0;break;case'days':va=days(a.date)||0;vb=days(b.date)||0;break;case'name':return sortDir*a.name.localeCompare(b.name);case'client':return sortDir*(a.client||'').localeCompare(b.client||'');case'status':return sortDir*a.status.localeCompare(b.status);case'prob':va={High:3,Medium:2,Low:1}[a.prob]||0;vb={High:3,Medium:2,Low:1}[b.prob]||0;break;case'owner':return sortDir*(a.owner||'').localeCompare(b.owner||'');case'priority':va={High:3,Medium:2,Low:1}[a.priority]||0;vb={High:3,Medium:2,Low:1}[b.priority]||0;break;case'risk':va={High:3,Medium:2,Low:1}[a.risk]||0;vb={High:3,Medium:2,Low:1}[b.risk]||0;break;case'notes':return sortDir*(a.notes||'').localeCompare(b.notes||'');default:va=a.val||0;vb=b.val||0}return sortDir*(va-vb)});
+    return arr;
+  }
+  sortRows(dActive);sortRows(dClosed);
 
   var sel=$('f-ow'),cur=sel.value,owSet={},ow=[];
   for(var i=0;i<DATA.length;i++){var o=DATA[i].owner;if(o&&!owSet[o]){owSet[o]=1;ow.push(o)}}ow.sort();
   sel.innerHTML='<option value="">Owner</option>'+ow.map(function(o){return'<option'+(o===cur?' selected':'')+'>'+o+'</option>'}).join('');
-  $('b-pipe').textContent=d.length+' proposals';
+  $('b-pipe').textContent=dActive.length+' active';
 
   var cellFns=[
     function(r){return'<td dir="auto"><strong>'+esc(r.name)+'</strong></td>'},
@@ -2357,13 +2383,33 @@ function renderPipe(){
     function(r){return'<td style="max-width:200px;font-size:10px">'+esc(r.notes)+'</td>'},
   ];
 
-  $('tb-p').innerHTML=d.map(function(r){
-    var cells='';
-    for(var c=0;c<PIPE_COLS.length;c++){if(!OV.hiddenCols['pipe:'+c])cells+=cellFns[c](r)}
-    var idx=ALL.indexOf(r);
-    cells+='<td class="pipe-act-td"><button class="btn-edit-row" onclick="openEditOpp('+idx+')" title="Edit">&#9998;</button></td>';
-    return'<tr>'+cells+'</tr>';
-  }).join('');
+  function buildRows(arr){
+    return arr.map(function(r){
+      var cells='';
+      for(var c=0;c<PIPE_COLS.length;c++){if(!OV.hiddenCols['pipe:'+c])cells+=cellFns[c](r)}
+      var idx=ALL.indexOf(r);
+      cells+='<td class="pipe-act-td"><button class="btn-edit-row" onclick="openEditOpp('+idx+')" title="Edit">&#9998;</button></td>';
+      return'<tr>'+cells+'</tr>';
+    }).join('');
+  }
+  $('tb-p').innerHTML=buildRows(dActive);
+
+  // Closed / inactive table
+  var closedWrap=$('pipe-closed-wrap');
+  if(dClosed.length){
+    closedWrap.style.display='block';
+    $('b-pipe-closed').textContent=dClosed.length;
+    // Build closed table header (mirror active)
+    var hdrI=$('pipe-hdr-i');hdrI.innerHTML='';
+    PIPE_COLS.forEach(function(col,i){
+      if(OV.hiddenCols['pipe:'+i])return;
+      var th=document.createElement('th');th.textContent=getOV('col:pipe:'+i,col.l);hdrI.appendChild(th);
+    });
+    var acthI=document.createElement('th');acthI.className='pipe-act-th';hdrI.appendChild(acthI);
+    $('tb-pi').innerHTML=buildRows(dClosed);
+  } else {
+    closedWrap.style.display='none';
+  }
 }
 function doSort(k){if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}renderPipe()}
 
