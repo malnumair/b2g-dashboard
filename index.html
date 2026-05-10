@@ -12,31 +12,31 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* ── Aanaab brand surfaces (purple family) ── */
-  --bg:#2E1275;       /* page canvas — deep Aanaab purple */
-  --sf:#3C1888;       /* card surface */
-  --sf2:#471895;      /* elevated — Aanaab Primary exact */
-  --sf3:#5928A5;      /* hover/active */
+  /* ── Aanaab brand surfaces — dark enough for strong contrast ── */
+  --bg:#0F0628;       /* page canvas — near-black purple */
+  --sf:#190A3E;       /* card surface */
+  --sf2:#221050;      /* elevated */
+  --sf3:#2E1668;      /* hover/active */
   /* ── Borders ── */
-  --bd:rgba(151,130,255,.18);
-  --bd-l:rgba(151,130,255,.38);
+  --bd:rgba(160,140,255,.2);
+  --bd-l:rgba(160,140,255,.4);
   /* ── Text ── */
-  --tx:#FFFFFF;
-  --tx-m:#E2D9FE;     /* readable lavender secondary */
-  --tx-d:#C4B5FD;     /* muted — was too dim at #9782FF */
+  --tx:#F0ECFF;
+  --tx-m:#DDD6FE;     /* readable lavender secondary */
+  --tx-d:#C4B5FD;     /* muted */
   /* ── Action accent ── */
-  --accent:#6F52FF; --accent-l:#C4B5FD; --accent-d:#471895;
-  /* ── Semantic colours (Aanaab palette only) ── */
-  --green:#2EBD90; --red:#EF4444; --blue:#89B2FF; --blue-l:#C4B5FD;
-  --amber:#F59E0B; --teal:#2EBD90; --gray:#6D6A76; --gray-l:#C4B5FD;
+  --accent:#7C5CFF; --accent-l:#C4B5FD; --accent-d:#5B3FD4;
+  /* ── Semantic colours ── */
+  --green:#2EBD90; --red:#F87171; --blue:#93C5FD; --blue-l:#C4B5FD;
+  --amber:#FBBF24; --teal:#2DD4BF; --gray:#6D6A76; --gray-l:#C4B5FD;
   /* ── CRITICAL legacy aliases — JS inlines these ── */
-  --purple:#6F52FF; --purple-l:#C4B5FD;
-  --navy:#1A0850; --navy-d:#110638;
+  --purple:#7C5CFF; --purple-l:#C4B5FD;
+  --navy:#0A0420; --navy-d:#06021A;
   --r:10px; --r-s:6px; --r-xs:4px;
   --ease:cubic-bezier(0.4,0,0.2,1); --dur:200ms;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh;overflow-x:hidden;background-image:radial-gradient(circle at 20% 20%,rgba(111,82,255,.08) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(46,189,144,.05) 0%,transparent 50%)}
+body{font-family:'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh;overflow-x:hidden;background-image:radial-gradient(circle at 20% 20%,rgba(124,92,255,.12) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(46,189,144,.07) 0%,transparent 50%)}
 h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:600;letter-spacing:-.2px}
 
 /* ADMIN BAR */
@@ -253,7 +253,7 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 .kpi-v{font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,2.6vw,28px);font-weight:600;letter-spacing:-.5px;line-height:1.1}
 .kpi-s{font-size:11px;color:var(--tx-d);margin-top:5px;line-height:1.4}
 .tbl-wrap{overflow-x:auto;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);-webkit-overflow-scrolling:touch;position:relative}
-.tbl-wrap::after{content:'';position:absolute;top:0;right:0;width:20px;height:100%;background:linear-gradient(to right,transparent,rgba(62,23,144,.7));pointer-events:none;border-radius:0 var(--r) var(--r) 0}
+.tbl-wrap::after{content:'';position:absolute;top:0;right:0;width:20px;height:100%;background:linear-gradient(to right,transparent,rgba(25,10,62,.7));pointer-events:none;border-radius:0 var(--r) var(--r) 0}
 .tbl{width:100%;border-collapse:collapse;min-width:700px}
 .tbl thead th{background:var(--bg);padding:10px 14px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--tx-m);font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:1px solid var(--bd);position:sticky;top:0;user-select:none;font-family:'IBM Plex Sans',sans-serif}
 .tbl thead th:hover{color:var(--tx-m)}
@@ -469,7 +469,7 @@ body{overflow:hidden}
 .app-shell{display:flex;height:100vh;overflow:hidden}
 
 /* SIDEBAR */
-.sidebar{width:216px;flex-shrink:0;background:#200A60;border-right:1px solid rgba(151,130,255,.18);display:flex;flex-direction:column;height:100vh;overflow:hidden;z-index:200}
+.sidebar{width:216px;flex-shrink:0;background:#0A0420;border-right:1px solid rgba(160,140,255,.2);display:flex;flex-direction:column;height:100vh;overflow:hidden;z-index:200}
 .sb-header{padding:16px 14px 12px;border-bottom:1px solid rgba(151,130,255,.18)}
 .sb-logo-row{display:flex;align-items:center;gap:10px}
 .sb-logo-box{width:36px;height:36px;background:linear-gradient(135deg,#471895,#6F52FF);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(71,24,149,.5),0 0 0 1px rgba(111,82,255,.35)}
@@ -506,7 +506,7 @@ body{overflow:hidden}
 .content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
 /* TOPBAR (replaces .hdr) */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;background:#260E65;border-bottom:1px solid rgba(151,130,255,.15);flex-shrink:0;gap:10px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;background:#0D0530;border-bottom:1px solid rgba(160,140,255,.2);flex-shrink:0;gap:10px}
 .topbar-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px}
 .topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .topbar-date{text-align:right;font-size:10px;color:#BDB0EE;line-height:1.5}
@@ -1020,7 +1020,7 @@ function saveCfg(c){try{localStorage.setItem('b2g_cfg',JSON.stringify(c))}catch(
 var CFG=getConfig();
 var APPS_SCRIPT_URL=CFG.appsScriptUrl||'';
 // Chart palette constants — use instead of hardcoded hex in doChart calls
-var P={accent:'#6F52FF',accentA:'rgba(111,82,255,.18)',accentB:'rgba(111,82,255,.5)',green:'#2EBD90',greenA:'rgba(46,189,144,.18)',red:'#EF4444',amber:'#F59E0B',blue:'#89B2FF',teal:'#2EBD90',txD:'#C4B5FD',txM:'#E2D9FE',purple:'#471895',purpleL:'#C4B5FD'};
+var P={accent:'#7C5CFF',accentA:'rgba(124,92,255,.18)',accentB:'rgba(124,92,255,.5)',green:'#2EBD90',greenA:'rgba(46,189,144,.18)',red:'#F87171',amber:'#FBBF24',blue:'#93C5FD',teal:'#2DD4BF',txD:'#C4B5FD',txM:'#DDD6FE',purple:'#5B3FD4',purpleL:'#C4B5FD'};
 
 var ALL=[],DATA=[],DATA_FULL=[],CARRIED=[],CARRIED_FULL=[],RECV=[],RECV_FULL=[],charts={},curTab=0,refreshTimer=null,adminMode=false;
 var ADMIN_PASS=CFG.password||'';
@@ -2006,7 +2006,7 @@ function renderRecvSummaryKPIs(){
   }
   var outstanding=totalInvoiced-totalReceived;
   var cards=[
-    {l:'Contracted Revenue',v:sarS(totalContracted),s:'FY tranches',c:'var(--teal)'},
+    {l:'Contracted Value',v:sarS(totalContracted),s:'FY tranches',c:'var(--teal)'},
     {l:'Received',v:sarS(totalReceived),s:'cash collected',c:'var(--green)'},
     {l:'Outstanding',v:sarS(outstanding),s:'awaiting payment',c:'var(--amber)'},
     {l:'Late Invoices',v:lateCount,s:lateCount>0?'action required':'all on time',c:lateCount>0?'var(--red)':'var(--green)'}
