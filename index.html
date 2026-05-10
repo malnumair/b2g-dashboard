@@ -2209,7 +2209,7 @@ function renderKPI(){
   var kpis=[
     {id:'total',l:'Total Proposals',v:tot,s:'FY '+CFG.fiscalYear,c:'var(--purple)'},
     {id:'won',l:'Won Revenue',v:won.length,s:sar(wV),c:'var(--green)'},
-    {id:'secured',l:'Contracted Value',v:recvCnt,s:sar(recvSv),c:'var(--teal)'},
+    {id:'secured',l:'Secured (BD)',v:secured.length,s:sar(sV)||'SAR 0',c:'var(--teal)'},
     {id:'pending',l:'Active Pipeline',v:pipeline.length,s:sarS(pV)+' value',c:'var(--blue)'},
     {id:'winrate',l:'Win Rate',v:wr+'%',s:won.length+'/'+dec+' decided (excl. Canceled)',c:'var(--green)'},
     {id:'gap',l:'Gap to '+sarM(CFG.target)+' Target',v:gapV>0?sarS(gapV):'On Track',s:gapV>0?'remaining to reach target':'Target met!',c:gapV>0?'var(--red)':'var(--green)'},
