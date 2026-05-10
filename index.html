@@ -2201,12 +2201,15 @@ function renderKPI(){
   for(i=0;i<won.length;i++)wV+=(won[i].val||0);for(i=0;i<secured.length;i++)sV+=(secured[i].val||0);for(i=0;i<pipeline.length;i++)pV+=(pipeline[i].val||0);
   var wr=dec?((won.length/dec)*100).toFixed(1):'0';
   var canc=0,lV=0;for(i=0;i<d.length;i++)if(d[i].status==='Canceled')canc++;for(i=0;i<lost.length;i++)lV+=(lost[i].val||0);
-  var gapV=CFG.target-(wV+sV);
+  // Secured from Receivables (same source as Annual Target card below)
+  var recvFY=getRecvFY(),recvSv=0,recvPM={},recvCnt=0;
+  for(var ri=0;ri<recvFY.length;ri++){recvSv+=recvFY[ri].amount;if(!recvPM[recvFY[ri].project]){recvPM[recvFY[ri].project]=true;recvCnt++}}
+  var gapV=CFG.target-(wV+recvSv);
 
   var kpis=[
     {id:'total',l:'Total Proposals',v:tot,s:'FY '+CFG.fiscalYear,c:'var(--purple)'},
     {id:'won',l:'Won Revenue',v:won.length,s:sar(wV),c:'var(--green)'},
-    {id:'secured',l:'Secured (Carried Over)',v:secured.length,s:sar(sV),c:'var(--teal)'},
+    {id:'secured',l:'Contracted Value',v:recvCnt,s:sar(recvSv),c:'var(--teal)'},
     {id:'pending',l:'Active Pipeline',v:pipeline.length,s:sarS(pV)+' value',c:'var(--blue)'},
     {id:'winrate',l:'Win Rate',v:wr+'%',s:won.length+'/'+dec+' decided (excl. Canceled)',c:'var(--green)'},
     {id:'gap',l:'Gap to '+sarM(CFG.target)+' Target',v:gapV>0?sarS(gapV):'On Track',s:gapV>0?'remaining to reach target':'Target met!',c:gapV>0?'var(--red)':'var(--green)'},
