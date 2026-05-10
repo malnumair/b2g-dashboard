@@ -1638,11 +1638,13 @@ function showBanner(type,msg){var b=$('src-banner');b.className='src-banner '+ty
 function processCSV(csv,isLive){
   if(typeof Papa==='undefined'){showBanner('offline','PapaParse not loaded.');return}
   // Smart header detection: scan first 10 rows for the real header row
-  // Headers must contain BOTH 'Proposal Name' AND 'Status' on the same line
+  // Headers must contain a name column AND status on the same line
   var lines=csv.split('\n');var headerIdx=0;
   for(var h=0;h<Math.min(lines.length,10);h++){
     var low=lines[h].toLowerCase();
-    if(low.indexOf('proposal name')>=0&&low.indexOf('status')>=0){headerIdx=h;break}
+    var hasName=low.indexOf('proposal name')>=0||low.indexOf('opportunity name')>=0;
+    var hasStatus=low.indexOf('status')>=0;
+    if(hasName&&hasStatus){headerIdx=h;break}
   }
   // Rebuild CSV from the detected header row onward, skip title/subtitle rows
   if(headerIdx>0){csv=lines.slice(headerIdx).join('\n');console.log('CSV: skipped '+headerIdx+' title rows, header at row '+(headerIdx+1))}
@@ -1661,12 +1663,25 @@ function processCSV(csv,isLive){
 }
 function norm(r){
   function g(keys){for(var i=0;i<keys.length;i++){var v=r[keys[i]];if(v!=null&&String(v).trim())return String(v).trim()}var rk=Object.keys(r);for(var j=0;j<rk.length;j++){var kl=rk[j].toLowerCase().trim();for(var m=0;m<keys.length;m++){if(kl.indexOf(keys[m].toLowerCase())>=0)return String(r[rk[j]]).trim()}}return''}
-  var vs=g(['Value (SAR) without VAT','Value (SAR)','Value']),ds=g(['Date Submitted','Date']);
-  return{rowNum:g(['#']),name:g(['Proposal Name','Proposal']),client:g(['Client']),contact:g(['Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Probability %','Probability'])),stage:g(['Stage']),status:normS(g(['Status'])),channel:g(['Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost','Reason']),owner:g(['Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes'])}
+  var vs=g(['Value (SAR) without VAT','Value (SAR) (Including VAT)','Value (SAR)','Value']),ds=g(['Date Submitted','Date']);
+  return{rowNum:g(['#']),name:g(['Opportunity Name','Proposal Name','Proposal']),client:g(['Client']),contact:g(['Client Contact Person','Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Winning Probability','Probability %','Probability'])),stage:g(['Stage']),status:normS(g(['Status'])),channel:g(['Lead Source','Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Awarding Date','Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost/Canceled','Reason Won/Lost','Reason']),owner:g(['Proposal Owner','Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes'])}
 }
 function parseV(v){if(!v||/tbc/i.test(v))return null;var n=parseFloat(v.replace(/[^0-9.]/g,''));return isNaN(n)?null:n}
 function parseD(d){if(!d||d==='-')return null;var p=new Date(d);return isNaN(p.getTime())?null:p}
-function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g,' ');return{won:'Won',lost:'Lost',pending:'Pending',canceled:'Canceled',cancelled:'Canceled','carried over':'Carried Over','carriedover':'Carried Over','carry over':'Carried Over'}[l]||s}
+function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g,' ');return{
+  // Standard values
+  won:'Won',lost:'Lost',pending:'Pending',canceled:'Canceled',cancelled:'Canceled',
+  'carried over':'Carried Over','carriedover':'Carried Over','carry over':'Carried Over',
+  // Your sheet's status values
+  'active opportunity':'Pending',
+  'in active opportunity':'Pending',
+  'not qualified':'Lost',
+  'contract signed':'Won',
+  'canceled by client':'Canceled',
+  'canceled by aanaab':'Canceled',
+  'cancelled by client':'Canceled',
+  'cancelled by aanaab':'Canceled'
+}[l]||s}
 function normP(p){if(!p)return'';var l=p.toLowerCase().trim();return{high:'High',medium:'Medium',med:'Medium',low:'Low'}[l]||p}
 function sar(n){if(n==null)return'TBC';return'SAR '+n.toLocaleString('en-US',{maximumFractionDigits:0})+' <span style="font-size:9px;color:var(--tx-d);font-weight:400">excl. VAT</span>'}
 function sarS(n){if(n==null)return'TBC';return'SAR '+n.toLocaleString('en-US',{maximumFractionDigits:0})}
