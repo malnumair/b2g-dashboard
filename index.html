@@ -304,7 +304,7 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 .t-bar div{height:100%;transition:width .6s var(--ease)}
 .t-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.025);font-size:11px}
 .t-item:last-child{border:none}
-.prog-bg{height:10px;background:var(--sf3);border-radius:5px;overflow:hidden}
+.prog-bg{height:10px;background:var(--sf3);border-radius:5px;overflow:hidden;display:flex}
 .prog-fill{height:100%;border-radius:5px;transition:width 1s var(--ease)}
 .prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--tx-m);margin-top:5px;font-family:'IBM Plex Mono',monospace}
 .gap{border-radius:var(--r);padding:18px;margin-top:16px}
@@ -2462,7 +2462,7 @@ function renderTeam(){
 }
 
 function renderTarget(){
-  var won=ALL.filter(function(r){return r.status==='Won'}),tv=0;
+  var won=DATA.filter(function(r){return r.status==='Won'}),tv=0;
   for(var i=0;i<won.length;i++)tv+=(won[i].val||0);
 
   // All money data sourced from Receivables sheet — only tranche amounts within the selected year
@@ -2477,13 +2477,21 @@ function renderTarget(){
   var totalConfirmed=tv+sv;
   var pct=Math.min(totalConfirmed/CFG.target*100,100),gap=CFG.target-totalConfirmed;
   var targetDisplay=getOV('cfg:target',CFG.target.toLocaleString('en-US'));
-  var outstanding=totalInvoiced;
+  // Non-overlapping bar segments
+  var netInvoiced=Math.max(0,totalInvoiced-totalReceived);
+  var netContracted=Math.max(0,sv-totalInvoiced);
   var recvPct=Math.min(totalReceived/CFG.target*100,100);
-  var invPct=Math.min(outstanding/CFG.target*100,100-recvPct);
-  var confirmPct=pct;
+  var invPct=Math.min(netInvoiced/CFG.target*100,100-recvPct);
+  var contractPct=Math.min(netContracted/CFG.target*100,100-recvPct-invPct);
+  var wonPct=Math.min(tv/CFG.target*100,100-recvPct-invPct-contractPct);
 
   $('target-top').innerHTML=
-    '<div class="card"><div class="bar-top" style="background:var(--purple)"></div><div class="kpi-l">Annual Target</div><div class="kpi-v">SAR <span class="cfg-val edt" data-ov="cfg:target">'+targetDisplay+'</span></div><div style="margin-top:12px"><div class="prog-bg"><div class="prog-fill" style="width:'+recvPct+'%;background:var(--green);border-radius:6px 0 0 6px"></div><div class="prog-fill" style="width:'+invPct+'%;background:var(--blue)"></div><div class="prog-fill" style="width:'+(confirmPct-recvPct-invPct>0?confirmPct-recvPct-invPct:0)+'%;background:var(--teal);border-radius:0 6px 6px 0"></div></div><div class="prog-lbl"><span>'+pct.toFixed(1)+'% confirmed</span><span>'+sar(totalConfirmed)+' / '+sar(CFG.target)+'</span></div></div><div style="display:flex;gap:12px;margin-top:6px;font-size:10px;flex-wrap:wrap"><span style="color:var(--green)">\u25cf Received '+sar(totalReceived)+'</span><span style="color:var(--blue)">\u25cf Invoiced '+sar(outstanding)+'</span><span style="color:var(--teal)">\u25cf Secured '+sar(totalConfirmed)+'</span></div></div>'+
+    '<div class="card"><div class="bar-top" style="background:var(--purple)"></div><div class="kpi-l">Annual Target</div><div class="kpi-v">SAR <span class="cfg-val edt" data-ov="cfg:target">'+targetDisplay+'</span></div><div style="margin-top:12px"><div class="prog-bg"><div class="prog-fill" style="width:'+recvPct.toFixed(2)+'%;background:var(--green)"></div><div class="prog-fill" style="width:'+invPct.toFixed(2)+'%;background:var(--blue)"></div><div class="prog-fill" style="width:'+contractPct.toFixed(2)+'%;background:var(--teal)"></div>'+(wonPct>0?'<div class="prog-fill" style="width:'+wonPct.toFixed(2)+'%;background:var(--accent)"></div>':'')+'</div><div class="prog-lbl"><span>'+pct.toFixed(1)+'% of SAR '+sarM(CFG.target)+' target</span><span>'+sar(totalConfirmed)+' confirmed</span></div></div><div style="display:flex;gap:12px;margin-top:6px;font-size:10px;flex-wrap:wrap">'+
+    (totalReceived>0?'<span style="color:var(--green)">\u25cf Received '+sar(totalReceived)+'</span>':'')+
+    (netInvoiced>0?'<span style="color:var(--blue)">\u25cf Invoiced '+sar(netInvoiced)+'</span>':'')+
+    (netContracted>0?'<span style="color:var(--teal)">\u25cf Contracted '+sar(netContracted)+'</span>':'')+
+    (tv>0?'<span style="color:var(--accent)">\u25cf Won BD '+sar(tv)+'</span>':'')+
+    '</div></div>'+
     '<div class="card"><div class="bar-top" style="background:var(--green)"></div><div class="kpi-l">Won Revenue</div><div class="kpi-v" style="color:var(--green)">'+sar(tv)+'</div><div class="kpi-s" style="margin-top:6px">'+won.length+' deals</div></div>'+
     '<div class="card"><div class="bar-top" style="background:var(--teal)"></div><div class="kpi-l">Secured (Carried Over)</div><div class="kpi-v" style="color:var(--teal)">'+sar(sv)+'</div><div class="kpi-s" style="margin-top:6px">'+securedCount+' project'+(securedCount!==1?'s':'')+' \u00b7 '+(gap>0?sar(gap)+' remaining':'Target met!')+'</div></div>';
 
