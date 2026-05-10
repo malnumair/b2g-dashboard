@@ -1314,7 +1314,7 @@ function applySettings(){
   // Re-process data with new fiscal year filter
   if(ALL.length){
     var fy=CFG.fiscalYear;DATA=[];CARRIED=[];
-    for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&(r.status==='Pending'||r.status==='Carried Over')){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
+    for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(r.status==='Carried Over'){DATA.push(r);continue}if(r.status==='Won'||r.status==='Lost'||r.status==='Canceled'){var dd=r.actDate?parseD(r.actDate):r.date;if(!dd||dd.getFullYear()===fy)DATA.push(r);continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&r.status==='Pending'){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
     saveFullData();renderAll();
   }
   // Update refresh timer
@@ -1338,7 +1338,7 @@ function loadCfgFromFirebase(){
     // Re-filter data if loaded
     if(ALL.length){
       var fy=CFG.fiscalYear||new Date().getFullYear();DATA=[];CARRIED=[];
-      for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&(r.status==='Pending'||r.status==='Carried Over')){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
+      for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(r.status==='Carried Over'){DATA.push(r);continue}if(r.status==='Won'||r.status==='Lost'||r.status==='Canceled'){var dd=r.actDate?parseD(r.actDate):r.date;if(!dd||dd.getFullYear()===fy)DATA.push(r);continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&r.status==='Pending'){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
       saveFullData();renderAll();
     }
   });
@@ -1674,7 +1674,7 @@ function processCSV(csv,isLive){
   var p=Papa.parse(csv,{header:true,skipEmptyLines:true});
   console.log('CSV parsed:',p.data.length,'rows, fields:',p.meta.fields?p.meta.fields.slice(0,5).join(', '):'none');
   ALL=[];for(var i=0;i<p.data.length;i++){var n=norm(p.data[i]);if(n.name)ALL.push(n)}
-  var fy=parseInt($('g-yr').value)||(CFG.fiscalYear||new Date().getFullYear());DATA=[];CARRIED=[];for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&(r.status==='Pending'||r.status==='Carried Over')){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
+  var gyv=$('g-yr').value;var allFY=!gyv;var fy=allFY?0:(parseInt(gyv)||(CFG.fiscalYear||new Date().getFullYear()));DATA=[];CARRIED=[];for(var j=0;j<ALL.length;j++){var r=ALL[j];if(r.rowNum==='TOTALS'||(r.name&&r.name.toLowerCase().indexOf('proposals')>=0&&/^\d+\s/.test(r.name)===false)){continue}if(allFY){DATA.push(r);continue}if(r.status==='Carried Over'){DATA.push(r);continue}if(r.status==='Won'||r.status==='Lost'||r.status==='Canceled'){var dd=r.actDate?parseD(r.actDate):r.date;if(!dd||dd.getFullYear()===fy)DATA.push(r);continue}if(r.date&&r.date.getFullYear()===fy){DATA.push(r);continue}if(!r.date&&r.status==='Pending'){DATA.push(r);continue}if(r.status==='Pending'&&r.date&&r.date.getFullYear()<fy){CARRIED.push(r);continue}}
   saveFullData();renderAll();
   var sk=$('skeleton-kpi');if(sk)sk.classList.remove('on');
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
