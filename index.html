@@ -1249,20 +1249,10 @@ body{overflow:hidden}
           <select id="ao-status" required>
             <option value="" disabled selected>Select status</option>
             <optgroup label="Active">
-              <option value="Pending">Pending</option>
               <option value="Qualified">Qualified</option>
-              <option value="Carried Over">Carried Over</option>
             </optgroup>
-            <optgroup label="Closed — Won">
-              <option value="Won">Won</option>
-              <option value="Contract Signed">Contract Signed</option>
-            </optgroup>
-            <optgroup label="Closed — Lost">
-              <option value="Lost">Lost</option>
+            <optgroup label="Closed">
               <option value="Not Qualified">Not Qualified</option>
-            </optgroup>
-            <optgroup label="Closed — Canceled">
-              <option value="Canceled">Canceled</option>
               <option value="Canceled by Client">Canceled by Client</option>
               <option value="Canceled by Aanaab">Canceled by Aanaab</option>
             </optgroup>
@@ -2201,23 +2191,28 @@ function norm(r){
   var activeCol=activeRaw.toLowerCase().trim();
   var hasActiveCol=activeRaw!=='';
   var isActive=!hasActiveCol||activeCol==='active'||activeCol==='yes'||activeCol==='true'||activeCol==='1';
-  return{rowNum:g(['#']),name:g(['Opportunity Name','Proposal Name','Proposal']),client:g(['Client']),contact:g(['Client Contact Person','Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Winning Probability','Probability %','Probability'])),stage:g(['Stage']),status:normS(rawSt),rawStatus:rawSt,channel:g(['Lead Source','Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Awarding Date','Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost/Canceled','Reason Won/Lost','Reason']),owner:g(['Proposal Owner','Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes']),summary:g(['Summary']),isActive:isActive,hasActiveCol:hasActiveCol}
+  var stage=g(['Stage']);
+  var canonSt=normS(rawSt);
+  // If Qualified + Stage is Contract Signed → treat as Won
+  if(canonSt==='Pending'&&stage==='Contract Signed')canonSt='Won';
+  return{rowNum:g(['#']),name:g(['Opportunity Name','Proposal Name','Proposal']),client:g(['Client']),contact:g(['Client Contact Person','Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Winning Probability','Probability %','Probability'])),stage:stage,status:canonSt,rawStatus:rawSt,channel:g(['Lead Source','Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Awarding Date','Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost/Canceled','Reason Won/Lost','Reason']),owner:g(['Proposal Owner','Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes']),summary:g(['Summary']),isActive:isActive,hasActiveCol:hasActiveCol}
 }
 function parseV(v){if(!v||/tbc/i.test(v))return null;var n=parseFloat(v.replace(/[^0-9.]/g,''));return isNaN(n)?null:n}
 function parseD(d){if(!d||d==='-')return null;var p=new Date(d);return isNaN(p.getTime())?null:p}
 function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g,' ');return{
-  // Standard values
-  won:'Won',lost:'Lost',pending:'Pending',canceled:'Canceled',cancelled:'Canceled',
-  'carried over':'Carried Over','carriedover':'Carried Over','carry over':'Carried Over',
-  // Your sheet's status values
-  'active opportunity':'Pending',
-  'in active opportunity':'Inactive',
-  'inactive opportunity':'Inactive',
+  // Sheet's 4 status values
   'qualified':'Pending',
   'not qualified':'Lost',
-  'contract signed':'Won',
   'canceled by client':'Canceled',
   'canceled by aanaab':'Canceled',
+  // Legacy / fallback values kept for backward compatibility
+  'won':'Won','lost':'Lost','pending':'Pending',
+  'canceled':'Canceled','cancelled':'Canceled',
+  'carried over':'Carried Over',
+  'active opportunity':'Pending',
+  'inactive opportunity':'Inactive',
+  'in active opportunity':'Inactive',
+  'contract signed':'Won',
   'cancelled by client':'Canceled',
   'cancelled by aanaab':'Canceled'
 }[l]||s}
@@ -2539,7 +2534,7 @@ function renderRecv(){
   try{renderRecvAlert()}catch(e){console.error('RecvAlert:',e)}
   try{renderRecvCards()}catch(e){console.error('RecvCards:',e)}
   try{renderCashFlow()}catch(e){console.error('CashFlow:',e)}
-  try{renderRecvSummaryKPIs()}catch(e){console.error('RecvSumKPI:',e)}
+  // renderRecvSummaryKPIs removed — Receivables moved to PM section
   try{renderCriticalPath()}catch(e){console.error('CritPath:',e)}
 }
 
