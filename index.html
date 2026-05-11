@@ -35,36 +35,51 @@
   --r:10px; --r-s:6px; --r-xs:4px;
   --ease:cubic-bezier(0.4,0,0.2,1); --dur:200ms;
 }
-/* ── LIGHT MODE ── */
+/* ── LIGHT MODE — Aanaab Brand: Primary #471895, Accent #6F52FF, Green #2EBD90 ── */
 body.light-mode{
-  --bg:#F4F2F9;
+  --bg:#F0ECFC;
   --sf:#FFFFFF;
-  --sf2:#F0EDFA;
-  --sf3:#E8E4F5;
-  --bd:rgba(100,80,180,.12);
-  --bd-l:rgba(100,80,180,.22);
-  --tx:#1E1236;
-  --tx-m:#4A3D6B;
-  --tx-d:#7B6FA0;
-  --accent:#6F52FF; --accent-l:#8B74FF; --accent-d:#5B3FD4;
-  --green:#1A9E6E; --red:#DC4545; --blue:#5B8FD4; --blue-l:#8B74FF;
-  --amber:#D4930A; --teal:#1BAA97; --gray:#8E8A96; --gray-l:#7B6FA0;
+  --sf2:#E8E2F8;
+  --sf3:#DDD5F4;
+  --bd:rgba(71,24,149,.13);
+  --bd-l:rgba(71,24,149,.26);
+  --tx:#180440;
+  --tx-m:#471895;
+  --tx-d:#6242A0;
+  --accent:#6F52FF; --accent-l:#8B74FF; --accent-d:#471895;
+  --green:#1A9E6E; --red:#CC2929; --blue:#2F5EB8; --blue-l:#6F52FF;
+  --amber:#AA6900; --teal:#14877A; --gray:#6D6879; --gray-l:#6242A0;
   --purple:#6F52FF; --purple-l:#8B74FF;
-  --navy:#E8E4F5; --navy-d:#DDD6FE;
+  --navy:#E8E2F8; --navy-d:#DDD5F4;
 }
-body.light-mode{background-image:radial-gradient(circle at 20% 20%,rgba(111,82,255,.05) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(46,189,144,.03) 0%,transparent 50%)}
-body.light-mode .card,body.light-mode .detail-box,body.light-mode .add-opp-box,body.light-mode .settings-box,body.light-mode .pm-card{box-shadow:0 1px 4px rgba(0,0,0,.06),0 0 0 1px rgba(100,80,180,.06)}
-body.light-mode .detail-box{background:linear-gradient(160deg,#fff 0%,#F8F6FE 100%)}
-body.light-mode #detail-modal{background:rgba(30,18,54,.35)}
-body.light-mode .stage-dot{background:rgba(100,80,180,.12);border-color:rgba(100,80,180,.15)}
-body.light-mode .stage-label{color:rgba(100,80,180,.4)}
-body.light-mode .stage-line{background:rgba(100,80,180,.1)}
+body.light-mode{background-image:radial-gradient(circle at 20% 20%,rgba(71,24,149,.06) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(46,189,144,.04) 0%,transparent 50%)}
+body.light-mode .card,body.light-mode .detail-box,body.light-mode .add-opp-box,body.light-mode .settings-box,body.light-mode .pm-card{box-shadow:0 2px 8px rgba(71,24,149,.08),0 0 0 1px rgba(71,24,149,.08)}
+body.light-mode .detail-box{background:linear-gradient(160deg,#fff 0%,#EDE8FA 100%)}
+body.light-mode #detail-modal{background:rgba(24,4,64,.4)}
+body.light-mode .stage-dot{background:rgba(71,24,149,.1);border-color:rgba(71,24,149,.18)}
+body.light-mode .stage-label{color:rgba(71,24,149,.4)}
+body.light-mode .stage-line{background:rgba(71,24,149,.12)}
 body.light-mode .stage-step.current .stage-label{color:var(--tx)}
-body.light-mode .detail-field{background:rgba(111,82,255,.03);border-color:rgba(111,82,255,.06)}
-body.light-mode .tbl tr:hover td{background:rgba(111,82,255,.04)}
-body.light-mode .sidebar{background:#fff;border-color:rgba(100,80,180,.1)}
-body.light-mode .topbar{background:#fff;border-color:rgba(100,80,180,.1)}
+body.light-mode .detail-field{background:rgba(71,24,149,.03);border-color:rgba(71,24,149,.08)}
+body.light-mode .tbl tr:hover td{background:rgba(71,24,149,.04)}
+body.light-mode .sidebar{background:#fff;border-color:rgba(71,24,149,.12)}
+body.light-mode .topbar{background:#fff;border-color:rgba(71,24,149,.12)}
 body.light-mode .mode-toggle{background:var(--sf3);border-color:var(--bd)}
+body.light-mode .tbl thead th{background:#fff;color:var(--tx-m)}
+body.light-mode .tag-won{background:rgba(26,158,110,.12);color:#0F6B48}
+body.light-mode .tag-pending{background:rgba(71,24,149,.10);color:#471895}
+body.light-mode .tag-lost{background:rgba(204,41,41,.10);color:#8B1A1A}
+body.light-mode .tag-canceled{background:rgba(109,104,121,.12);color:#3D3848}
+body.light-mode .prob-high{background:rgba(204,41,41,.10);color:#8B1A1A}
+body.light-mode .prob-med{background:rgba(170,105,0,.10);color:#6B4200}
+body.light-mode .prob-low{background:rgba(47,94,184,.10);color:#1A3D7A}
+body.light-mode .card{background:#fff}
+body.light-mode .sec-title{color:var(--tx)}
+body.light-mode input,body.light-mode select{background:#fff;color:var(--tx);border-color:rgba(71,24,149,.2)}
+body.light-mode .btn{background:var(--sf2);color:var(--tx-m);border-color:rgba(71,24,149,.18)}
+body.light-mode .btn:hover{background:var(--sf3);color:var(--tx)}
+body.light-mode .btn-add-opp{background:var(--accent);color:#fff}
+body.light-mode .btn-add-opp:hover{background:var(--accent-d);color:#fff}
 html{scroll-behavior:smooth}
 body{font-family:'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh;overflow-x:hidden;background-image:radial-gradient(circle at 20% 20%,rgba(124,92,255,.12) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(46,189,144,.07) 0%,transparent 50%);transition:background .3s,color .3s}
 h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:600;letter-spacing:-.2px}
@@ -644,10 +659,6 @@ body{overflow:hidden}
 .detail-close-btn:hover{background:rgba(255,255,255,.04);border-color:var(--bd-l);color:var(--tx)}
 .detail-edit-btn{background:linear-gradient(135deg,var(--accent),var(--accent-d));border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;transition:all .2s var(--ease);box-shadow:0 2px 8px rgba(124,92,255,.25)}
 .detail-edit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,92,255,.35)}
-.mode-toggle{display:flex;background:var(--sf3);border:1px solid var(--bd);border-radius:var(--r-s);overflow:hidden}
-.mode-btn{padding:5px 14px;font-size:11px;font-weight:600;border:none;background:transparent;color:var(--tx-d);cursor:pointer;font-family:'Poppins',sans-serif;transition:all var(--dur) var(--ease)}
-.mode-btn.on{background:var(--accent);color:#fff}
-.mode-btn:hover:not(.on){background:var(--sf);color:var(--tx)}
 .pm-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .pm-card{background:var(--sf);border:1px solid var(--bd-l);border-radius:var(--r);padding:18px;transition:border-color var(--dur) var(--ease)}
 .pm-card:hover{border-color:var(--accent)}
@@ -853,7 +864,7 @@ body{overflow:hidden}
     <div class="topbar-title" id="topbar-section-title">Executive Summary</div>
   </div>
   <div class="topbar-right">
-    <div class="mode-toggle" id="mode-toggle">
+    <div class="mode-toggle" id="mode-toggle" style="display:none">
       <button class="mode-btn on" id="mode-bd" onclick="switchMode('bd')">Pipeline</button>
       <button class="mode-btn" id="mode-pm" onclick="switchMode('pm')">Opportunities <span class="wip-badge">WIP</span></button>
     </div>
@@ -2010,7 +2021,7 @@ function norm(r){
   var activeCol=activeRaw.toLowerCase().trim();
   var hasActiveCol=activeRaw!=='';
   var isActive=!hasActiveCol||activeCol==='active'||activeCol==='yes'||activeCol==='true'||activeCol==='1';
-  return{rowNum:g(['#']),name:g(['Opportunity Name','Proposal Name','Proposal']),client:g(['Client']),contact:g(['Client Contact Person','Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Winning Probability','Probability %','Probability'])),stage:g(['Stage']),status:normS(rawSt),rawStatus:rawSt,channel:g(['Lead Source','Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Awarding Date','Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost/Canceled','Reason Won/Lost','Reason']),owner:g(['Proposal Owner','Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes']),isActive:isActive,hasActiveCol:hasActiveCol}
+  return{rowNum:g(['#']),name:g(['Opportunity Name','Proposal Name','Proposal']),client:g(['Client']),contact:g(['Client Contact Person','Contact Person','Contact']),dateStr:ds,date:parseD(ds),valStr:vs,val:parseV(vs),tbc:/tbc/i.test(vs)||vs==='',prob:normP(g(['Winning Probability','Probability %','Probability'])),stage:g(['Stage']),status:normS(rawSt),rawStatus:rawSt,channel:g(['Lead Source','Submission Channel','Channel']),expDate:g(['Expected Decision Date','Expected Decision']),actDate:g(['Awarding Date','Actual Decision Date','Actual Decision']),cycle:g(['Cycle Time (Days)','Cycle Time']),reason:g(['Reason Won/Lost/Canceled','Reason Won/Lost','Reason']),owner:g(['Proposal Owner','Owner']),next:g(['Next Action']),priority:g(['Priority']),risk:g(['Risk Level','Risk']),notes:g(['Notes']),summary:g(['Summary']),isActive:isActive,hasActiveCol:hasActiveCol}
 }
 function parseV(v){if(!v||/tbc/i.test(v))return null;var n=parseFloat(v.replace(/[^0-9.]/g,''));return isNaN(n)?null:n}
 function parseD(d){if(!d||d==='-')return null;var p=new Date(d);return isNaN(p.getTime())?null:p}
@@ -2470,6 +2481,7 @@ function openDetail(allIdx){
   var dy=days(r.date);var daysLbl=dy==null?'—':dy<=0?'Today':dy+' days';
   $('dm-body').innerHTML=
     '<div class="detail-stage-banner">'+buildStageStepper(r.stage)+'</div>'+
+    (r.summary?'<div class="detail-section-title">Summary</div><div class="detail-notes" style="margin-bottom:4px">'+esc(r.summary)+'</div>':'')+
     '<div class="detail-section-title">Key Info</div>'+
     '<div class="detail-grid">'+
       detailField('Client',esc(r.client))+
@@ -3094,11 +3106,15 @@ function renderPipe(){
   if(dClosed.length){
     closedWrap.style.display='block';
     $('b-pipe-closed').textContent=dClosed.length;
-    // Build closed table header (mirror active)
+    // Build closed table header (mirror active — same cols, sort, styles)
     var hdrI=$('pipe-hdr-i');hdrI.innerHTML='';
     PIPE_COLS.forEach(function(col,i){
       if(OV.hiddenCols['pipe:'+i])return;
-      var th=document.createElement('th');th.textContent=getOV('col:pipe:'+i,col.l);hdrI.appendChild(th);
+      var th=document.createElement('th');
+      th.textContent=getOV('col:pipe:'+i,col.l);
+      th.className='edt';th.dataset.ov='col:pipe:'+i;
+      th.onclick=(function(k){return function(e){if(!adminMode){doSort(k)}}})(col.k);
+      hdrI.appendChild(th);
     });
     var acthI=document.createElement('th');acthI.className='pipe-act-th';hdrI.appendChild(acthI);
     $('tb-pi').innerHTML=buildRows(dClosed);
