@@ -1105,9 +1105,17 @@ body{overflow:hidden}
 
   <!-- PM Sections (hidden by default) -->
   <section class="sec" id="s-6" style="display:none"><div class="sec-body" id="sb-6">
-    <h2 class="sec-title">PM Overview</h2>
+    <h2 class="sec-title">PM Summary <span class="badge" id="pm-summary-badge">—</span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:4px">All active projects &amp; tasks</span></h2>
     <div class="grid g-auto" id="pm-kpis" style="margin-bottom:14px"></div>
-    <div class="chart-box"><h4>Project Status Distribution</h4><div class="chart-area" style="height:220px"><canvas id="c-pm-status"></canvas></div></div>
+    <div id="pm-attention-wrap" style="margin-bottom:14px"></div>
+    <div class="grid g2" style="margin-bottom:14px">
+      <div class="chart-box"><h4>Project Status</h4><div class="chart-area" style="height:200px"><canvas id="c-pm-status"></canvas></div></div>
+      <div class="chart-box"><h4>Task Breakdown</h4><div class="chart-area" style="height:200px"><canvas id="c-pm-tasks"></canvas></div></div>
+    </div>
+    <div class="chart-box" id="pm-progress-wrap">
+      <h4>Project Completion</h4>
+      <div id="pm-proj-progress" style="padding-top:6px"></div>
+    </div>
   </div></section>
 
   <section class="sec" id="s-7" style="display:none"><div class="sec-body" id="sb-7">
@@ -2638,28 +2646,43 @@ function switchMode(mode){
 }
 function normProject(row){
   var g=function(k){return(row[k]||'').trim()};
+  var ed=g('End Date')||g('end date')||'';
+  var edDate=ed?new Date(ed):null;
+  var isOverdue=edDate&&!isNaN(edDate.getTime())&&edDate<new Date()&&(g('Status')||g('status')||'Active')!=='Complete';
+  var daysLeft=edDate&&!isNaN(edDate.getTime())?Math.ceil((edDate-new Date())/864e5):null;
   return{
     name:g('Project Name')||g('project name')||g('Name')||'',
     client:g('Client')||g('client')||'',
     value:parseFloat((g('Contract Value')||g('contract value')||'0').replace(/[^0-9.-]/g,''))||0,
     startDate:g('Start Date')||g('start date')||'',
-    endDate:g('End Date')||g('end date')||'',
+    endDate:ed,
+    endDateObj:edDate,
+    daysLeft:daysLeft,
+    isOverdue:isOverdue,
     status:g('Status')||g('status')||'Active',
     pctComplete:parseInt(g('% Complete')||g('% complete')||g('Completion')||'0')||0,
     owner:g('PM Owner')||g('pm owner')||g('Owner')||'',
     bdProposal:g('BD Proposal')||g('bd proposal')||'',
+    phase:g('Phase')||g('phase')||'',
+    risk:g('Risk Level')||g('Risk')||g('risk')||'',
     notes:g('Notes')||g('notes')||''
   };
 }
 function normTask(row){
   var g=function(k){return(row[k]||'').trim()};
+  var dd=g('Due Date')||g('due date')||'';
+  var ddDate=dd?new Date(dd):null;
+  var isOverdue=ddDate&&!isNaN(ddDate.getTime())&&ddDate<new Date()&&(g('Status')||g('status')||'To Do')!=='Done';
   return{
     name:g('Task Name')||g('task name')||g('Task')||'',
     project:g('Project')||g('project')||'',
     assignee:g('Assignee')||g('assignee')||'',
-    dueDate:g('Due Date')||g('due date')||'',
+    dueDate:dd,
+    dueDateObj:ddDate,
+    isOverdue:isOverdue,
     status:g('Status')||g('status')||'To Do',
     priority:g('Priority')||g('priority')||'Medium',
+    phase:g('Phase')||g('Milestone')||g('phase')||'',
     notes:g('Notes')||g('notes')||''
   };
 }
@@ -2702,16 +2725,90 @@ function renderPMOverview(){
   var totalVal=PM_PROJECTS.reduce(function(s,p){return s+p.value},0);
   var totalTasks=PM_TASKS.length;
   var doneTasks=PM_TASKS.filter(function(t){return t.status==='Done'}).length;
+  var inProgTasks=PM_TASKS.filter(function(t){return t.status==='In Progress'}).length;
   var blockedTasks=PM_TASKS.filter(function(t){return t.status==='Blocked'}).length;
+  var overdueTasks=PM_TASKS.filter(function(t){return t.isOverdue}).length;
+  var overdueProjs=PM_PROJECTS.filter(function(p){return p.isOverdue}).length;
+  var taskRate=totalTasks?Math.round(doneTasks/totalTasks*100):0;
+  var atRisk=PM_PROJECTS.filter(function(p){return p.status==='Active'&&p.daysLeft!==null&&p.daysLeft<30&&p.pctComplete<70}).length;
+
+  // Badge
+  var badge=$('pm-summary-badge');if(badge)badge.textContent=total+' projects · '+totalTasks+' tasks';
+
+  // KPI cards
   el.innerHTML=
-    '<div class="card"><div class="bar-top" style="background:var(--accent)"></div><div class="kpi-l">Total Projects</div><div class="kpi-v">'+total+'</div><div class="kpi-sub">'+active+' active, '+onHold+' on hold, '+complete+' complete</div></div>'+
-    '<div class="card"><div class="bar-top" style="background:var(--teal)"></div><div class="kpi-l">Contract Value</div><div class="kpi-v">'+sar(totalVal)+'</div><div class="kpi-sub">Across all projects</div></div>'+
-    '<div class="card"><div class="bar-top" style="background:var(--green)"></div><div class="kpi-l">Avg Completion</div><div class="kpi-v">'+avgPct+'%</div><div class="kpi-sub">Across '+total+' projects</div></div>'+
-    '<div class="card"><div class="bar-top" style="background:var(--blue)"></div><div class="kpi-l">Tasks</div><div class="kpi-v">'+totalTasks+'</div><div class="kpi-sub">'+doneTasks+' done, '+blockedTasks+' blocked</div></div>';
-  // Status chart
-  var canvas=$('c-pm-status');if(!canvas)return;
-  if(charts['pm-status'])charts['pm-status'].destroy();
-  charts['pm-status']=new Chart(canvas.getContext('2d'),{type:'doughnut',data:{labels:['Active','On Hold','Complete'],datasets:[{data:[active,onHold,complete],backgroundColor:[P.green,P.amber,P.accent],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:P.txD,font:{size:11}}}}}});
+    '<div class="card kpi-anim" style="animation-delay:0ms"><div class="bar-top kpi-accent-1"></div><div class="kpi-l">Active Projects</div><div class="kpi-v">'+active+'</div><div class="kpi-s">'+onHold+' on hold · '+complete+' complete</div></div>'+
+    '<div class="card kpi-anim" style="animation-delay:40ms"><div class="bar-top kpi-accent-3"></div><div class="kpi-l">Avg Completion</div><div class="kpi-v">'+avgPct+'%</div><div class="kpi-s">Across '+total+' project'+(total!==1?'s':'')+'</div></div>'+
+    '<div class="card kpi-anim" style="animation-delay:80ms"><div class="bar-top kpi-accent-2"></div><div class="kpi-l">Task Completion</div><div class="kpi-v">'+taskRate+'%</div><div class="kpi-s">'+doneTasks+' of '+totalTasks+' tasks done</div></div>'+
+    '<div class="card kpi-anim" style="animation-delay:120ms"><div class="bar-top" style="background:linear-gradient(180deg,var(--teal),#14877A)"></div><div class="kpi-l">Contract Value</div><div class="kpi-v" style="font-size:clamp(14px,1.8vw,22px)">'+sarM(totalVal)+'</div><div class="kpi-s">Across all projects</div></div>'+
+    (overdueTasks||blockedTasks?'<div class="card kpi-anim" style="animation-delay:160ms;border-left:3px solid var(--red)"><div class="kpi-l" style="color:var(--red)">Needs Attention</div><div class="kpi-v" style="color:var(--red)">'+(overdueTasks+blockedTasks)+'</div><div class="kpi-s">'+overdueTasks+' overdue task'+(overdueTasks!==1?'s':'')+' · '+blockedTasks+' blocked</div></div>':'')+
+    (atRisk?'<div class="card kpi-anim" style="animation-delay:200ms;border-left:3px solid var(--amber)"><div class="kpi-l" style="color:var(--amber)">At Risk</div><div class="kpi-v" style="color:var(--amber)">'+atRisk+'</div><div class="kpi-s">project'+(atRisk!==1?'s':'')+' due &lt;30 days, &lt;70% done</div></div>':'');
+
+  // Attention section
+  var attn=$('pm-attention-wrap');
+  if(attn){
+    var attRows='';
+    // Blocked tasks
+    var blocked=PM_TASKS.filter(function(t){return t.status==='Blocked'});
+    blocked.forEach(function(t){
+      attRows+='<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.18);border-radius:7px;margin-bottom:6px;font-size:12px">'+
+        '<span style="background:rgba(248,113,113,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:\'IBM Plex Mono\',monospace">BLOCKED</span>'+
+        '<strong>'+esc(t.name)+'</strong>'+
+        (t.project?'<span style="color:var(--tx-d)">· '+esc(t.project)+'</span>':'')+
+        (t.assignee?'<span style="margin-left:auto;color:var(--tx-d);font-size:11px">'+esc(t.assignee)+'</span>':'')+'</div>';
+    });
+    // Overdue tasks
+    var overdueT=PM_TASKS.filter(function(t){return t.isOverdue&&t.status!=='Blocked'});
+    overdueT.slice(0,4).forEach(function(t){
+      var d=t.dueDateObj?Math.ceil((new Date()-t.dueDateObj)/864e5):0;
+      attRows+='<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.18);border-radius:7px;margin-bottom:6px;font-size:12px">'+
+        '<span style="background:rgba(251,191,36,.12);color:var(--amber);padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:\'IBM Plex Mono\',monospace">OVERDUE</span>'+
+        '<strong>'+esc(t.name)+'</strong>'+
+        (t.project?'<span style="color:var(--tx-d)">· '+esc(t.project)+'</span>':'')+
+        '<span style="margin-left:auto;color:var(--amber);font-size:11px">'+d+' day'+(d!==1?'s':'')+' past due</span></div>';
+    });
+    attn.innerHTML=attRows?'<div style="margin-bottom:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--red)">&#9888; Needs Attention</div>'+attRows:'';
+  }
+
+  // Project status donut
+  var canvas=$('c-pm-status');
+  if(canvas){
+    if(charts['pm-status'])try{charts['pm-status'].destroy()}catch(e){}
+    charts['pm-status']=new Chart(canvas.getContext('2d'),{type:'doughnut',data:{labels:['Active','On Hold','Complete'],datasets:[{data:[active,onHold,complete],backgroundColor:['#6F52FF','#F59E0B','#2EBD90'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:P.txD,font:{size:11},padding:12}}}}});
+  }
+
+  // Task status bar chart
+  var ctask=$('c-pm-tasks');
+  if(ctask){
+    if(charts['pm-tasks'])try{charts['pm-tasks'].destroy()}catch(e){}
+    var todoT=PM_TASKS.filter(function(t){return t.status==='To Do'}).length;
+    charts['pm-tasks']=new Chart(ctask.getContext('2d'),{type:'bar',data:{labels:['To Do','In Progress','Done','Blocked'],datasets:[{data:[todoT,inProgTasks,doneTasks,blockedTasks],backgroundColor:['rgba(196,181,253,.35)','#6F52FF','#2EBD90','#F87171'],borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:P.txD,font:{size:11}},grid:{display:false}},y:{ticks:{color:P.txD,font:{size:10},stepSize:1},grid:{color:'rgba(151,130,255,.08)'}}}}});
+  }
+
+  // Project completion horizontal bars
+  var progWrap=$('pm-proj-progress');
+  if(progWrap){
+    var activeP=PM_PROJECTS.filter(function(p){return p.status!=='Complete'}).sort(function(a,b){return a.pctComplete-b.pctComplete});
+    if(!activeP.length){progWrap.innerHTML='<div class="pm-empty">No active projects</div>';return;}
+    progWrap.innerHTML=activeP.map(function(p){
+      var col=p.pctComplete>=80?'#2EBD90':p.pctComplete>=50?'#6F52FF':'#F59E0B';
+      var dlbl=p.daysLeft!==null?(p.daysLeft<0?Math.abs(p.daysLeft)+' days overdue':p.daysLeft+' days left'):'';
+      var dlColor=p.daysLeft!==null&&p.daysLeft<0?'var(--red)':p.daysLeft!==null&&p.daysLeft<14?'var(--amber)':'var(--tx-d)';
+      return'<div style="margin-bottom:14px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'+
+          '<div style="font-size:12px;font-weight:600;color:var(--tx)">'+esc(p.name)+(p.client?'<span style="font-weight:400;color:var(--tx-d);margin-left:6px">'+esc(p.client)+'</span>':'')+'</div>'+
+          '<div style="display:flex;align-items:center;gap:12px;font-size:11px">'+
+            (p.status==='On Hold'?'<span style="color:var(--amber)">On Hold</span>':'')+
+            (dlbl?'<span style="color:'+dlColor+'">'+dlbl+'</span>':'')+
+            '<strong style="color:var(--tx);min-width:34px;text-align:right">'+p.pctComplete+'%</strong>'+
+          '</div>'+
+        '</div>'+
+        '<div style="height:8px;background:var(--sf3);border-radius:4px;overflow:hidden">'+
+          '<div style="width:'+p.pctComplete+'%;height:100%;background:'+col+';border-radius:4px;transition:width .8s var(--ease)"></div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
 }
 function renderProjects(){
   var el=$('pm-projects-grid');if(!el)return;
