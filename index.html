@@ -1250,6 +1250,7 @@ body{overflow:hidden}
             <option value="" disabled selected>Select status</option>
             <optgroup label="Active">
               <option value="Pending">Pending</option>
+              <option value="Qualified">Qualified</option>
               <option value="Carried Over">Carried Over</option>
             </optgroup>
             <optgroup label="Closed — Won">
@@ -2212,6 +2213,7 @@ function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g
   'active opportunity':'Pending',
   'in active opportunity':'Inactive',
   'inactive opportunity':'Inactive',
+  'qualified':'Pending',
   'not qualified':'Lost',
   'contract signed':'Won',
   'canceled by client':'Canceled',
