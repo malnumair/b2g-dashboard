@@ -1248,10 +1248,23 @@ body{overflow:hidden}
           <label>Status</label>
           <select id="ao-status" required>
             <option value="" disabled selected>Select status</option>
-            <option value="Pending">Pending</option>
-            <option value="Won">Won</option>
-            <option value="Lost">Lost</option>
-            <option value="Canceled">Canceled</option>
+            <optgroup label="Active">
+              <option value="Pending">Pending</option>
+              <option value="Carried Over">Carried Over</option>
+            </optgroup>
+            <optgroup label="Closed — Won">
+              <option value="Won">Won</option>
+              <option value="Contract Signed">Contract Signed</option>
+            </optgroup>
+            <optgroup label="Closed — Lost">
+              <option value="Lost">Lost</option>
+              <option value="Not Qualified">Not Qualified</option>
+            </optgroup>
+            <optgroup label="Closed — Canceled">
+              <option value="Canceled">Canceled</option>
+              <option value="Canceled by Client">Canceled by Client</option>
+              <option value="Canceled by Aanaab">Canceled by Aanaab</option>
+            </optgroup>
           </select>
         </div>
         <div class="ao-field">
