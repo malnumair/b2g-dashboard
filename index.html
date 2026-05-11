@@ -1134,7 +1134,13 @@ body{overflow:hidden}
 
   <!-- PM Sections (hidden by default) -->
   <section class="sec" id="s-6" style="display:none"><div class="sec-body" id="sb-6">
-    <h2 class="sec-title">PM Summary <span class="badge" id="pm-summary-badge">—</span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:4px">All active projects &amp; tasks</span></h2>
+    <h2 class="sec-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>PM Summary <span class="badge" id="pm-summary-badge">—</span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:4px">All active projects &amp; tasks</span></span>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="font-size:10px;padding:5px 10px;opacity:.8" onclick="downloadPMTemplate('projects')" title="Download blank Google Sheet template for Projects">&#11015; Projects Template</button>
+        <button class="btn" style="font-size:10px;padding:5px 10px;opacity:.8" onclick="downloadPMTemplate('tasks')" title="Download blank Google Sheet template for Tasks">&#11015; Tasks Template</button>
+      </div>
+    </h2>
     <div class="grid g-auto" id="pm-kpis" style="margin-bottom:14px"></div>
     <div id="pm-attention-wrap" style="margin-bottom:14px"></div>
     <div class="grid g2" style="margin-bottom:14px">
@@ -1208,38 +1214,41 @@ body{overflow:hidden}
           <label>Client Contact Person</label>
           <input type="text" id="ao-contact" placeholder="Full name">
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Date Submitted</label>
-          <input type="date" id="ao-date">
+          <input type="date" id="ao-date" required>
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Value (SAR incl. VAT)</label>
-          <input type="number" id="ao-value" min="0" step="1000" placeholder="e.g. 1500000">
+          <input type="number" id="ao-value" min="0" step="1000" placeholder="e.g. 1500000" required>
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Winning Probability</label>
-          <select id="ao-prob">
+          <select id="ao-prob" required>
+            <option value="" disabled selected>Select probability</option>
             <option value="High">High</option>
-            <option value="Medium" selected>Medium</option>
+            <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </select>
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Stage</label>
-          <select id="ao-stage">
+          <select id="ao-stage" required>
+            <option value="" disabled selected>Select stage</option>
             <option value="Under Qualification">Under Qualification</option>
             <option value="Scoping">Scoping</option>
             <option value="Proposal Under-Development">Proposal Under-Development</option>
-            <option value="Proposal Submitted" selected>Proposal Submitted</option>
+            <option value="Proposal Submitted">Proposal Submitted</option>
             <option value="Proposal Approved">Proposal Approved</option>
             <option value="PO Received">PO Received</option>
             <option value="Contract Signed">Contract Signed</option>
           </select>
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Status</label>
-          <select id="ao-status">
-            <option value="Pending" selected>Pending</option>
+          <select id="ao-status" required>
+            <option value="" disabled selected>Select status</option>
+            <option value="Pending">Pending</option>
             <option value="Won">Won</option>
             <option value="Lost">Lost</option>
             <option value="Canceled">Canceled</option>
@@ -1255,9 +1264,10 @@ body{overflow:hidden}
         <div class="ao-field">
           <label>Lead Source</label>
           <select id="ao-channel">
+            <option value="" disabled selected>Select source</option>
             <option value="Etimad">Etimad</option>
             <option value="Direct">Direct</option>
-            <option value="Email" selected>Email</option>
+            <option value="Email">Email</option>
             <option value="CFP">CFP</option>
             <option value="RFP">RFP</option>
             <option value="Referral">Referral</option>
@@ -1265,23 +1275,25 @@ body{overflow:hidden}
             <option value="Other">Other</option>
           </select>
         </div>
-        <div class="ao-field">
+        <div class="ao-field ao-required">
           <label>Proposal Owner</label>
-          <select id="ao-owner"></select>
+          <select id="ao-owner" required></select>
         </div>
         <div class="ao-field">
           <label>Priority</label>
           <select id="ao-priority">
+            <option value="" disabled selected>Select priority</option>
             <option value="High">High</option>
-            <option value="Medium" selected>Medium</option>
+            <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </select>
         </div>
         <div class="ao-field">
           <label>Risk</label>
           <select id="ao-risk">
+            <option value="" disabled selected>Select risk</option>
             <option value="High">High</option>
-            <option value="Medium" selected>Medium</option>
+            <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </select>
         </div>
@@ -2568,7 +2580,7 @@ function openAddOpp(){
   var iso=new Date().toISOString().slice(0,10);
   $('ao-date').value=iso;
   var owSel=$('ao-owner');
-  owSel.innerHTML=(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
+  owSel.innerHTML='<option value="" disabled selected>Select owner</option>'+(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
   $('add-opp-form').reset();
   $('ao-date').value=iso;
   $('ao-status-msg').textContent='';
@@ -3055,7 +3067,7 @@ function openEditOpp(allIdx){
   $('ao-modal-title').textContent='Edit Opportunity';
   $('ao-submit-txt').textContent='Save Changes';
   var owSel=$('ao-owner');
-  owSel.innerHTML=(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
+  owSel.innerHTML='<option value="" disabled>Select owner</option>'+(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
   $('ao-name').value=r.name||'';
   $('ao-client').value=r.client||'';
   $('ao-contact').value=r.contact||'';
@@ -3304,6 +3316,29 @@ function applyKpiTarget(){
   closeKpiDetail();
   renderKPI();
   showBanner('live','Target updated to '+sar(v));
+}
+
+// ================================================================
+// PM TEMPLATE DOWNLOAD
+// ================================================================
+function downloadPMTemplate(type){
+  var csv,filename;
+  if(type==='projects'){
+    filename='PM-Projects-Template.csv';
+    csv='Project Name,Client,Contract Value,Start Date,End Date,Status,% Complete,PM Owner,BD Proposal,Notes\n';
+    csv+='"Example: MOC Phase 2","Ministry of Culture","850000","2026-01-15","2026-06-30","Active","40","Your Name","MOC-2026","Notes here"\n';
+  } else {
+    filename='PM-Tasks-Template.csv';
+    csv='Task Name,Project,Assignee,Due Date,Status,Priority,Notes\n';
+    csv+='"Example: Finalize curriculum","Project Name","Assignee Name","2026-05-30","To Do","High","Notes here"\n';
+  }
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=filename;a.style.display='none';
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},500);
+  showBanner('live','Downloaded '+filename);
 }
 
 function renderProbWeightChart(){
