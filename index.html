@@ -605,6 +605,38 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 /* ADD OPPORTUNITY BUTTON */
 .btn-add-opp{background:linear-gradient(135deg,#6F52FF 0%,#471895 100%);border-color:transparent;color:#fff;font-weight:700;box-shadow:0 2px 10px rgba(111,82,255,.3),inset 0 1px 0 rgba(255,255,255,.15)}
 .btn-add-opp:hover{background:linear-gradient(135deg,#8B74FF 0%,#5B3FD4 100%);box-shadow:0 4px 16px rgba(111,82,255,.4),inset 0 1px 0 rgba(255,255,255,.18);transform:translateY(-1px)}
+/* KPI CLICKABLE HINT */
+.kpi-clickable{transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
+.kpi-clickable:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(111,82,255,.22)}
+.kpi-click-hint{position:absolute;bottom:6px;right:8px;font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--tx-d);opacity:0;transition:opacity .18s var(--ease);text-transform:uppercase;letter-spacing:.5px}
+.kpi-clickable:hover .kpi-click-hint{opacity:1}
+/* KPI DETAIL MODAL */
+#kpi-detail-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:650;display:none;align-items:center;justify-content:center;padding:20px}
+#kpi-detail-modal.on{display:flex}
+.kd-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);width:480px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeUp .22s var(--ease) both}
+.kd-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--bd)}
+.kd-hdr h3{font-size:15px;font-weight:700;margin:0;color:var(--tx)}
+.kd-close{background:none;border:none;color:var(--tx-d);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;transition:color var(--dur) var(--ease)}
+.kd-close:hover{color:var(--tx)}
+.kd-body{padding:18px 24px 24px}
+.kd-section-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.8px;color:var(--tx-d);font-weight:700;margin-bottom:6px}
+.kd-formula{font-size:12px;color:var(--tx-m);line-height:1.7;padding:12px 14px;background:rgba(111,82,255,.06);border:1px solid rgba(111,82,255,.14);border-radius:7px;margin-bottom:14px}
+.kd-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(111,82,255,.07);font-size:12px;color:var(--tx-m)}
+.kd-row:last-child{border-bottom:none}
+.kd-row strong{font-weight:700;color:var(--tx);font-family:'IBM Plex Mono',monospace;font-size:12px}
+.kd-result{background:rgba(111,82,255,.06);border-radius:6px;padding:8px 10px;margin:6px 0;border-bottom:none!important}
+.kd-result strong{color:#A08CFF;font-size:13px}
+.kd-ok{background:rgba(46,189,144,.07)}
+.kd-ok strong{color:var(--green)!important}
+.kd-warn{background:rgba(239,68,68,.07)}
+.kd-warn strong{color:var(--red)!important}
+.kd-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px}
+.kd-table th{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx-d);font-weight:600;padding:5px 0;text-align:left;border-bottom:1px solid var(--bd)}
+.kd-table td{padding:5px 0;color:var(--tx-m);border-bottom:1px solid rgba(111,82,255,.04)}
+.kd-table tr:last-child td{color:var(--tx);font-weight:700;border-top:1px solid rgba(111,82,255,.14);border-bottom:none;padding-top:7px}
+.kd-note{font-size:10px;color:var(--tx-d);line-height:1.6;margin-top:10px;padding:8px 10px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.12);border-radius:6px}
+.kd-edit-target{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)}
+.kd-edit-target label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx-d);font-weight:600}
 /* REFRESH LOADING */
 #refresh-btn.loading{opacity:.7;pointer-events:none}
 #refresh-btn.loading span.rbtn-txt::before{content:'↻ '}
@@ -1008,30 +1040,27 @@ body{overflow:hidden}
   <!-- Section 0: Executive Summary -->
   <div class="sec-ctrl" id="sc-0"><span class="sc-drag" draggable="true" ondragstart="dragSec(event,0)">&#9783;</span><button class="sc-collapse" onclick="toggleCollapse(0)" id="scb-0">&#9662;</button><span class="sc-label">Summary</span><button class="sc-menu" onclick="showSecMenu(event,0)">&#8942;</button></div>
   <section class="sec on" id="s-0"><div class="sec-body" id="sb-0">
-    <h2 class="sec-title"><span class="edt" data-ov="sec:0:title">Executive Summary</span> <span class="badge" id="fy-badge">2026</span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:6px">All values excl. VAT</span></h2>
-    <div id="skeleton-kpi" class="on"><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div></div>
-    <div class="grid g-auto" id="kpi"></div>
+    <h2 class="sec-title">BD Summary <span class="badge" id="fy-badge">2026</span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:6px">Click any card for details &amp; formula</span></h2>
+    <div id="skeleton-kpi" class="on"><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div></div>
+    <div class="grid g-auto" id="kpi" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
     <!-- Action Items -->
     <div id="action-items-wrap" style="margin-top:18px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <h3 style="font-size:15px;font-weight:700;margin:0">Action Items</h3>
+        <h3 style="font-size:14px;font-weight:700;margin:0">Action Items</h3>
         <button id="ai-add-btn" onclick="addActionItem()" style="display:none;background:var(--purple);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;font-weight:600">+ Add Item</button>
       </div>
       <div id="action-items-list"></div>
       <div id="ai-empty" style="font-size:11px;color:var(--tx-d);padding:12px;text-align:center;background:var(--sf2);border-radius:8px">No action items yet. Enter admin mode to add items.</div>
     </div>
-
     <div class="grid g2" style="margin-top:14px">
-      <div class="chart-box"><h4 class="edt" data-ov="chart:donut:title">Pipeline Funnel</h4><div class="chart-type-picker"><select onchange="switchChart('donut',this.value)"><option value="doughnut">Donut</option><option value="pie">Pie</option><option value="bar">Bar</option></select></div><div class="chart-area" style="height:220px"><canvas id="c-donut"></canvas></div></div>
-      <div class="chart-box"><h4 class="edt" data-ov="chart:vbar:title">Value by Status (SAR)</h4><div class="chart-type-picker"><select onchange="switchChart('vbar',this.value)"><option value="bar" selected>Bar</option><option value="line">Line</option><option value="doughnut">Donut</option></select></div><div class="chart-area" style="height:220px"><canvas id="c-vbar"></canvas></div></div>
+      <div class="chart-box"><h4>Pipeline by Stage</h4><div class="chart-area" style="height:220px"><canvas id="c-donut"></canvas></div></div>
+      <div class="chart-box"><h4>Win / Loss Breakdown (SAR)</h4><div class="chart-area" style="height:220px"><canvas id="c-vbar"></canvas></div></div>
     </div>
-
-    <!-- Probability-weighted pipeline -->
-    <div class="chart-box" style="margin-top:14px"><h4>Probability-Weighted Pipeline vs Target</h4><div class="chart-area" style="height:130px"><canvas id="c-probweight"></canvas></div></div>
-    <!-- Revenue Target & Trend (moved from Revenue tab) -->
-    <div class="grid g2" id="target-top" style="margin-top:14px"></div>
-    <div class="chart-box" style="margin-top:14px"><h4 class="edt" data-ov="chart:trend:title">Cumulative Won Revenue vs Target</h4><div class="chart-type-picker"><select onchange="switchChart('trend',this.value)"><option value="line" selected>Line</option><option value="bar">Bar</option></select></div><div class="chart-area"><canvas id="c-trend"></canvas></div></div>
-    <div id="gap-box"></div>
+    <!-- hidden canvases kept for backward compat, not shown -->
+    <canvas id="c-probweight" style="display:none"></canvas>
+    <canvas id="c-trend" style="display:none"></canvas>
+    <div id="target-top" style="display:none"></div>
+    <div id="gap-box" style="display:none"></div>
   </div></section>
   <div class="add-block" onclick="addBlock(0)">+ Add block</div>
 
@@ -1289,6 +1318,23 @@ body{overflow:hidden}
     <div class="detail-footer">
       <button class="detail-close-btn" onclick="closeDetail()">Close</button>
       <button class="detail-edit-btn" id="dm-edit-btn">Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- KPI DETAIL MODAL -->
+<div id="kpi-detail-modal">
+  <div class="kd-box">
+    <div class="kd-hdr">
+      <h3 id="kd-title">KPI Details</h3>
+      <button class="kd-close" onclick="closeKpiDetail()" aria-label="Close">&times;</button>
+    </div>
+    <div class="kd-body">
+      <div class="kd-section-lbl">Formula</div>
+      <div class="kd-formula" id="kd-formula"></div>
+      <div class="kd-section-lbl">Breakdown</div>
+      <div id="kd-breakdown"></div>
+      <div id="kd-edit-wrap"></div>
     </div>
   </div>
 </div>
@@ -1981,11 +2027,14 @@ function buildNav(){
     if(sy)sy.textContent=CFG.fiscalYear||2026;
     return;
   }
-  // BD navigation
+  // BD navigation — only show sections 0 (BD Summary) and 1 (Pipeline)
+  var BD_VISIBLE=[0,1];
   var order=OV.sectionOrder;
-  var groupLabels={0:'Overview',3:'People & Money'};
+  var groupLabels={0:'Overview'};
   for(var i=0;i<order.length;i++){
     var idx=order[i];
+    // Skip sections not in BD visible list
+    if(BD_VISIBLE.indexOf(idx)<0)continue;
     var hidden=OV.hiddenSections[idx];
     if(hidden&&!adminMode)continue;
     var label=getOV('sec:'+idx+':title',SEC_NAMES[idx]);
@@ -2536,9 +2585,11 @@ function closeAddOpp(){
 document.addEventListener('click',function(e){
   if(e.target&&e.target.id==='add-opp-modal')closeAddOpp();
   if(e.target&&e.target.id==='detail-modal')closeDetail();
+  if(e.target&&e.target.id==='kpi-detail-modal')closeKpiDetail();
 });
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
+    if($('kpi-detail-modal')&&$('kpi-detail-modal').classList.contains('on')){closeKpiDetail();return}
     if($('pm-proj-modal')&&$('pm-proj-modal').style.display==='flex'){closePMProjectModal();return}
     if($('pm-task-modal')&&$('pm-task-modal').style.display==='flex'){closePMTaskModal();return}
     if($('detail-modal')&&$('detail-modal').classList.contains('on')){closeDetail();return}
@@ -3143,49 +3194,116 @@ function removeAI(idx){
 }
 
 function renderKPI(){
-  var d=DATA,tot=d.length,won=[],secured=[],pend=[],lost=[];
-  for(var i=0;i<d.length;i++){if(d[i].status==='Won')won.push(d[i]);else if(d[i].status==='Carried Over')secured.push(d[i]);else if(d[i].status==='Pending'&&!isDisregarded(d[i]))pend.push(d[i]);else if(d[i].status==='Lost')lost.push(d[i])}
-  // Split pending into pipeline (valued) vs leads (TBC)
-  var pipeline=[],leadsList=[];
-  for(i=0;i<pend.length;i++){if(!pend[i].tbc&&pend[i].val>0)pipeline.push(pend[i]);else leadsList.push(pend[i])}
-  var dec=won.length+lost.length,wV=0,sV=0,pV=0,ldCount=leadsList.length;
-  for(i=0;i<won.length;i++)wV+=(won[i].val||0);for(i=0;i<secured.length;i++)sV+=(secured[i].val||0);for(i=0;i<pipeline.length;i++)pV+=(pipeline[i].val||0);
-  var wr=dec?((won.length/dec)*100).toFixed(1):'0';
-  var canc=0,lV=0;for(i=0;i<d.length;i++)if(d[i].status==='Canceled')canc++;for(i=0;i<lost.length;i++)lV+=(lost[i].val||0);
-  // Secured from Receivables (same source as Annual Target card below)
-  var recvFY=getRecvFY(),recvSv=0,recvPM={},recvCnt=0;
-  for(var ri=0;ri<recvFY.length;ri++){recvSv+=recvFY[ri].amount;if(!recvPM[recvFY[ri].project]){recvPM[recvFY[ri].project]=true;recvCnt++}}
-  var gapV=CFG.target-(wV+recvSv);
+  var d=DATA,tot=d.length,won=[],pend=[],lost=[],secured=[];
+  for(var i=0;i<d.length;i++){
+    if(d[i].status==='Won')won.push(d[i]);
+    else if(d[i].status==='Carried Over')secured.push(d[i]);
+    else if(d[i].status==='Pending'&&!isDisregarded(d[i]))pend.push(d[i]);
+    else if(d[i].status==='Lost')lost.push(d[i]);
+  }
+  var wV=0,sV=0,pV=0,lV=0;
+  for(i=0;i<won.length;i++)wV+=(won[i].val||0);
+  for(i=0;i<secured.length;i++)sV+=(secured[i].val||0);
+  for(i=0;i<pend.length;i++)pV+=(pend[i].val||0);
+  for(i=0;i<lost.length;i++)lV+=(lost[i].val||0);
+  // Win Rate = Contract Signed / Total Proposals
+  var wrPct=tot?((won.length/tot)*100).toFixed(1):'0';
+  // Gap = Annual Target - Won Revenue
+  var gapV=CFG.target-wV;
+  var gapOnTrack=gapV<=0;
+
+  // Store computed values globally for KPI detail modal
+  window._kpiData={
+    tot:tot,won:won,pend:pend,lost:lost,secured:secured,
+    wV:wV,sV:sV,pV:pV,lV:lV,wrPct:wrPct,gapV:gapV
+  };
 
   var kpis=[
-    {id:'total',l:'Total Proposals',v:tot,s:'FY '+CFG.fiscalYear,c:'var(--purple)'},
-    {id:'won',l:'Won Revenue',v:won.length,s:sar(wV),c:'var(--green)'},
-    {id:'secured',l:'Secured (BD)',v:secured.length,s:sar(sV)||'SAR 0',c:'var(--teal)'},
-    {id:'pending',l:'Active Pipeline',v:pipeline.length,s:sarS(pV)+' value',c:'var(--blue)'},
-    {id:'winrate',l:'Win Rate',v:wr+'%',s:won.length+'/'+dec+' decided (excl. Canceled)',c:'var(--green)'},
-    {id:'gap',l:'Gap to '+sarM(CFG.target)+' Target',v:gapV>0?sarS(gapV):'On Track',s:gapV>0?'remaining to reach target':'Target met!',c:gapV>0?'var(--red)':'var(--green)'},
+    {id:'total',l:'Total Proposals',v:tot,s:'FY '+CFG.fiscalYear,c:'var(--purple)',icon:'&#128203;'},
+    {id:'winrate',l:'Win Rate',v:wrPct+'%',s:won.length+' won / '+tot+' total',c:'var(--green)',icon:'&#127942;'},
+    {id:'pending',l:'Active Pipeline',v:pend.length,s:pend.length?sarS(pV)+' value':'No active proposals',c:'var(--blue)',icon:'&#9654;'},
+    {id:'gap',l:'Gap to Target',v:gapOnTrack?'On Track':sarS(gapV),s:gapOnTrack?'Target met ✔':'remaining of '+sarM(CFG.target)+' target',c:gapOnTrack?'var(--green)':'var(--red)',icon:gapOnTrack?'&#10003;':'&#9650;'},
   ];
 
   $('kpi').innerHTML=kpis.map(function(k,kpiIndex){
-    var label=getOV('kpi:'+k.id+':label',k.l);
-    var valOv=OV.overrides['kpi:'+k.id+':value'];
-    var value=valOv!==undefined?valOv:String(k.v);
-    var hasOv=valOv!==undefined;
-    var bgCol=OV.cardColors['kpi:'+k.id];
     var accentCls='kpi-accent-'+((kpiIndex%4)+1);
-    return'<div class="card '+accentCls+'" '+(bgCol?'style="background:'+bgCol+'"':'')+'><div class="bar-top" style="background:'+k.c+'"></div>'+
-      '<div class="card-admin-btn" onclick="showCardMenu(event,\'kpi:'+k.id+'\')">&#8942;</div>'+
-      '<div class="kpi-l edt'+(hasOv?' edt-override':'')+'" data-ov="kpi:'+k.id+':label">'+esc(label)+'</div>'+
-      '<div class="kpi-v edt" data-ov="kpi:'+k.id+':value">'+value+'</div>'+
+    return'<div class="card '+accentCls+' kpi-clickable" onclick="openKpiDetail(\''+k.id+'\')" title="Click for formula &amp; details" style="cursor:pointer;position:relative">'+
+      '<div class="bar-top" style="background:'+k.c+'"></div>'+
+      '<div class="kpi-click-hint">Click for details</div>'+
+      '<div class="kpi-l">'+esc(k.l)+'</div>'+
+      '<div class="kpi-v">'+k.v+'</div>'+
       '<div class="kpi-s">'+k.s+'</div></div>'
   }).join('');
-  // Staggered entrance animation on KPI cards
+  // Staggered entrance animation
   var kpiCards=$('kpi').children;
   for(var ki=0;ki<kpiCards.length;ki++){kpiCards[ki].style.animation='none';kpiCards[ki].style.opacity='0';(function(el,d){setTimeout(function(){el.style.animation='';el.style.opacity='';el.style.animationDelay=d+'ms';el.classList.add('kpi-anim')},d)})(kpiCards[ki],ki*55);}
 
-  doChart('donut','c-donut','bar',{labels:['Submitted','Active Pipeline','Won'],datasets:[{data:[tot,pipeline.length+secured.length,won.length],backgroundColor:[P.accentA,P.accentB,P.green],borderColor:[P.accent,P.accent,P.green],borderWidth:1.5,borderRadius:5,barThickness:28}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.x+' proposals ('+(tot?((c.parsed.x/tot)*100).toFixed(0):0)+'%)'}}}},scales:{x:{display:false,grid:{display:false}},y:{ticks:{color:'#C4B5FD',font:{weight:'600',family:'Poppins'}},grid:{display:false}}}});
+  doChart('donut','c-donut','bar',{labels:['Submitted','Active Pipeline','Won'],datasets:[{data:[tot,pend.length+secured.length,won.length],backgroundColor:[P.accentA,P.accentB,P.green],borderColor:[P.accent,P.accent,P.green],borderWidth:1.5,borderRadius:5,barThickness:28}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.x+' proposals ('+(tot?((c.parsed.x/tot)*100).toFixed(0):0)+'%)'}}}},scales:{x:{display:false,grid:{display:false}},y:{ticks:{color:'#C4B5FD',font:{weight:'600',family:'Poppins'}},grid:{display:false}}}});
   doChart('vbar','c-vbar','bar',{labels:['Won','Secured','Pipeline','Lost'],datasets:[{data:[wV,sV,pV,lV],backgroundColor:['#2EBD90','#C4B5FD','#6F52FF','#EF4444'],borderRadius:4,barThickness:32}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return sar(c.parsed.x)}}}},scales:{x:{ticks:{color:'rgba(151,130,255,.65)',callback:function(v){return sarS(v)},font:{family:'IBM Plex Mono',size:10}},grid:{color:'rgba(151,130,255,.08)'}},y:{ticks:{color:'#C4B5FD',font:{weight:'600',family:'Poppins'}},grid:{display:false}}}});
-  renderProbWeightChart();
+}
+
+// ================================================================
+// KPI DETAIL MODAL
+// ================================================================
+function openKpiDetail(id){
+  var kd=window._kpiData||{};
+  var tot=kd.tot||0,won=kd.won||[],pend=kd.pend||[],lost=kd.lost||[],secured=kd.secured||[];
+  var wV=kd.wV||0,pV=kd.pV||0,lV=kd.lV||0,wrPct=kd.wrPct||'0',gapV=kd.gapV||0;
+  var modal=$('kpi-detail-modal');if(!modal)return;
+  var title='',formula='',breakdown='',editHtml='';
+  if(id==='total'){
+    title='Total Proposals';
+    formula='Count of all proposals in the dataset for FY '+CFG.fiscalYear+'.';
+    var byStatus={};
+    var allD=DATA;for(var i=0;i<allD.length;i++){var st=allD[i].status||'Unknown';byStatus[st]=(byStatus[st]||0)+1;}
+    breakdown='<table class="kd-table"><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody>';
+    Object.keys(byStatus).forEach(function(s){breakdown+='<tr><td><span class="tag tag-'+s.toLowerCase().replace(/\s+/g,'-')+'">'+s+'</span></td><td>'+byStatus[s]+'</td></tr>';});
+    breakdown+='<tr style="font-weight:700;border-top:1px solid rgba(111,82,255,.2)"><td>Total</td><td>'+tot+'</td></tr></tbody></table>';
+  }else if(id==='winrate'){
+    title='Win Rate';
+    formula='<strong>Contract Signed ÷ Total Proposals × 100</strong><br><br>Numerator: proposals with status "Won"<br>Denominator: all proposals in FY '+CFG.fiscalYear;
+    breakdown='<div class="kd-row"><span>Won (Contract Signed)</span><strong>'+won.length+'</strong></div>'+
+      '<div class="kd-row"><span>Total Proposals</span><strong>'+tot+'</strong></div>'+
+      '<div class="kd-row kd-result"><span>Win Rate</span><strong>'+wrPct+'%</strong></div>'+
+      '<p class="kd-note">Note: This counts all proposals, not just decided ones. To see won vs. decided only: '+won.length+' won / '+(won.length+lost.length)+' decided = '+(won.length+lost.length?((won.length/(won.length+lost.length))*100).toFixed(1):'0')+'%</p>';
+  }else if(id==='pending'){
+    title='Active Pipeline';
+    formula='Count of proposals with status <strong>Pending</strong> (not Won, Lost, Canceled, or Carried Over). These are proposals you are actively working on right now.';
+    var byProb={High:0,Medium:0,Low:0,Other:0};
+    for(var ii=0;ii<pend.length;ii++){var p=pend[ii].prob||'Other';if(byProb[p]!==undefined)byProb[p]++;else byProb.Other++;}
+    breakdown='<div class="kd-row"><span>High Probability</span><strong>'+byProb.High+'</strong></div>'+
+      '<div class="kd-row"><span>Medium Probability</span><strong>'+byProb.Medium+'</strong></div>'+
+      '<div class="kd-row"><span>Low Probability</span><strong>'+byProb.Low+'</strong></div>'+
+      '<div class="kd-row kd-result"><span>Total Active</span><strong>'+pend.length+'</strong></div>'+
+      '<div class="kd-row"><span>Combined Value</span><strong>'+sar(pV)+'</strong></div>';
+  }else if(id==='gap'){
+    title='Gap to Target';
+    var onTrack=gapV<=0;
+    formula='<strong>Annual Target − Won Revenue</strong><br><br>If negative (target exceeded), shows "On Track".';
+    breakdown='<div class="kd-row"><span>Annual Target</span><strong>'+sar(CFG.target)+'</strong></div>'+
+      '<div class="kd-row"><span>Won Revenue (Contract Signed)</span><strong>'+sar(wV)+'</strong></div>'+
+      '<div class="kd-row kd-result '+(onTrack?'kd-ok':'kd-warn')+'"><span>Gap</span><strong>'+(onTrack?'On Track ✓':sar(gapV)+' remaining')+'</strong></div>';
+    editHtml='<div class="kd-edit-target">'+
+      '<label>Change Annual Target (SAR):</label>'+
+      '<div style="display:flex;gap:8px;margin-top:6px">'+
+      '<input type="number" id="kd-target-input" class="flt" style="flex:1;min-width:0;padding:8px 10px;font-size:13px" value="'+CFG.target+'" placeholder="e.g. 40000000">'+
+      '<button class="btn-edit-row" style="opacity:1;padding:8px 14px;font-size:12px;border-radius:6px" onclick="applyKpiTarget()">Apply</button>'+
+      '</div></div>';
+  }
+  $('kd-title').textContent=title;
+  $('kd-formula').innerHTML=formula;
+  $('kd-breakdown').innerHTML=breakdown;
+  $('kd-edit-wrap').innerHTML=editHtml;
+  modal.classList.add('on');
+}
+function closeKpiDetail(){var m=$('kpi-detail-modal');if(m)m.classList.remove('on')}
+function applyKpiTarget(){
+  var inp=$('kd-target-input');if(!inp)return;
+  var v=parseInt(inp.value);if(!v||v<0){alert('Enter a valid target amount');return;}
+  CFG.target=v;queueSave();
+  closeKpiDetail();
+  renderKPI();
+  showBanner('live','Target updated to '+sar(v));
 }
 
 function renderProbWeightChart(){
