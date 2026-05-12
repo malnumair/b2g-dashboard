@@ -816,7 +816,7 @@ body{overflow:hidden}
 /* ===== PROJECT DETAIL MODAL ===== */
 #pm-proj-detail{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:650;display:none;align-items:center;justify-content:center;padding:20px}
 #pm-proj-detail.on{display:flex}
-.proj-detail-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);width:900px;max-width:97vw;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeUp .22s var(--ease) both}
+.proj-detail-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);width:900px;max-width:97vw;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeUp .22s var(--ease) both;direction:ltr}
 .proj-detail-hdr{display:flex;align-items:start;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--bd);gap:12px;flex-wrap:wrap}
 .proj-detail-hdr h3{font-size:17px;font-weight:700;margin:0;color:var(--tx)}
 .proj-detail-body{padding:0 24px 28px}
@@ -830,11 +830,11 @@ body{overflow:hidden}
 .pd-health-warn{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
 .pd-health-risk{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
 /* Gantt */
-.gantt-wrap{overflow-x:auto;padding-bottom:4px;position:relative}
+.gantt-wrap{overflow-x:auto;padding-bottom:4px;position:relative;direction:ltr}
 .gantt-hdr-row{display:flex;margin-left:160px;margin-bottom:6px;position:relative;height:16px}
 .gantt-hdr-tick{position:absolute;font-size:9px;color:var(--tx-d);font-family:'IBM Plex Mono',monospace;transform:translateX(-50%);white-space:nowrap}
 .gantt-row{display:flex;align-items:center;height:30px;margin-bottom:3px}
-.gantt-row-label{width:155px;flex-shrink:0;font-size:11px;color:var(--tx-m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.gantt-row-label{width:155px;flex-shrink:0;font-size:11px;color:var(--tx-m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;direction:ltr;unicode-bidi:isolate;text-align:left}
 .gantt-row-track{flex:1;position:relative;height:20px;background:rgba(111,82,255,.06);border-radius:4px;min-width:200px}
 .gantt-bar{position:absolute;height:100%;border-radius:4px;cursor:pointer;transition:filter .15s;display:flex;align-items:center;padding:0 6px;font-size:9px;color:rgba(255,255,255,.9);font-weight:600;white-space:nowrap;overflow:hidden;min-width:4px}
 .gantt-bar:hover{filter:brightness(1.2)}
