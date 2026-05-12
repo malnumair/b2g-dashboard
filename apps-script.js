@@ -123,6 +123,36 @@ function doPost(e) {
       return jsonResponse({status: 'ok', row: rowNum});
     }
 
+    // ── PM Timeline actions ──
+    if (action === 'insertTimeline') {
+      var sheet = getOrCreateSheet(ss, 'PM Timeline',
+        ['#', 'Task/Phase', 'Project', 'Start Date', 'End Date', '% Complete', 'Assignee', 'Notes']);
+      var nextRow = sheet.getLastRow() + 1;
+      var row = [
+        nextRow - 1, payload.taskPhase || '', payload.project || '',
+        payload.startDate || '', payload.endDate || '',
+        payload.pctComplete || 0, payload.assignee || '', payload.notes || ''
+      ];
+      sheet.appendRow(row);
+      writeLog(ss, action, payload.taskPhase, payload.project, sheet.getLastRow());
+      return jsonResponse({status: 'ok', row: sheet.getLastRow()});
+    }
+
+    if (action === 'updateTimeline') {
+      var sheet = ss.getSheetByName('PM Timeline');
+      if (!sheet) return jsonResponse({status: 'error', message: 'PM Timeline sheet not found'});
+      var rowNum = parseInt(payload.rowNum);
+      if (!rowNum || rowNum < 2) return jsonResponse({status: 'error', message: 'Invalid row'});
+      var vals = [
+        payload.taskPhase || '', payload.project || '',
+        payload.startDate || '', payload.endDate || '',
+        payload.pctComplete || 0, payload.assignee || '', payload.notes || ''
+      ];
+      sheet.getRange(rowNum, 2, 1, 7).setValues([vals]);
+      writeLog(ss, action, payload.taskPhase, payload.project, rowNum);
+      return jsonResponse({status: 'ok', row: rowNum});
+    }
+
     return jsonResponse({status: 'error', message: 'Unknown action: ' + action});
 
   } catch (err) {

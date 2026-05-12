@@ -789,8 +789,8 @@ body{overflow:hidden}
 .detail-edit-btn{background:linear-gradient(135deg,var(--accent),var(--accent-d));border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;transition:all .2s var(--ease);box-shadow:0 2px 8px rgba(124,92,255,.25)}
 .detail-edit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,92,255,.35)}
 .pm-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.pm-card{background:var(--sf);border:1px solid var(--bd-l);border-radius:var(--r);padding:18px;transition:border-color var(--dur) var(--ease)}
-.pm-card:hover{border-color:var(--accent)}
+.pm-card{background:var(--sf);border:1px solid var(--bd-l);border-radius:var(--r);padding:18px;transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);cursor:pointer}
+.pm-card:hover{border-color:var(--accent);box-shadow:0 4px 20px rgba(111,82,255,.12)}
 .pm-card-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px}
 .pm-card-client{font-size:11px;color:var(--tx-d);margin-bottom:12px}
 .pm-card-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--tx-m);margin-bottom:12px}
@@ -813,6 +813,39 @@ body{overflow:hidden}
 @media(max-width:600px){.detail-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.ao-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.topbar-right .btn-add-opp span:not(svg){display:none}}
+/* ===== PROJECT DETAIL MODAL ===== */
+#pm-proj-detail{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:650;display:none;align-items:center;justify-content:center;padding:20px}
+#pm-proj-detail.on{display:flex}
+.proj-detail-box{background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);width:900px;max-width:97vw;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeUp .22s var(--ease) both}
+.proj-detail-hdr{display:flex;align-items:start;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--bd);gap:12px;flex-wrap:wrap}
+.proj-detail-hdr h3{font-size:17px;font-weight:700;margin:0;color:var(--tx)}
+.proj-detail-body{padding:0 24px 28px}
+.pd-section{margin-top:20px}
+.pd-section-title{font-size:9px;text-transform:uppercase;letter-spacing:.9px;color:var(--tx-d);font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.pd-charter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pd-field{background:var(--sf3);border-radius:7px;padding:10px 12px}
+.pd-field-label{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx-d);margin-bottom:4px;font-weight:600}
+.pd-field-value{font-size:13px;font-weight:600;color:var(--tx)}
+.pd-health-ok{background:rgba(46,189,144,.12);color:var(--green);border:1px solid rgba(46,189,144,.25);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
+.pd-health-warn{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
+.pd-health-risk{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
+/* Gantt */
+.gantt-wrap{overflow-x:auto;padding-bottom:4px;position:relative}
+.gantt-hdr-row{display:flex;margin-left:160px;margin-bottom:6px;position:relative;height:16px}
+.gantt-hdr-tick{position:absolute;font-size:9px;color:var(--tx-d);font-family:'IBM Plex Mono',monospace;transform:translateX(-50%);white-space:nowrap}
+.gantt-row{display:flex;align-items:center;height:30px;margin-bottom:3px}
+.gantt-row-label{width:155px;flex-shrink:0;font-size:11px;color:var(--tx-m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.gantt-row-track{flex:1;position:relative;height:20px;background:rgba(111,82,255,.06);border-radius:4px;min-width:200px}
+.gantt-bar{position:absolute;height:100%;border-radius:4px;cursor:pointer;transition:filter .15s;display:flex;align-items:center;padding:0 6px;font-size:9px;color:rgba(255,255,255,.9);font-weight:600;white-space:nowrap;overflow:hidden;min-width:4px}
+.gantt-bar:hover{filter:brightness(1.2)}
+.gantt-today-line{position:absolute;top:-4px;bottom:-4px;width:2px;background:rgba(239,68,68,.65);border-radius:1px;pointer-events:none;z-index:2}
+/* Gantt edit popup */
+#gantt-edit-pop{position:fixed;background:var(--sf2);border:1px solid var(--bd-l);border-radius:var(--r);padding:18px;box-shadow:0 12px 48px rgba(0,0,0,.55);z-index:700;display:none;width:270px}
+#gantt-edit-pop.on{display:block}
+#gantt-edit-pop .gantt-edit-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+/* pd tasks table */
+#pd-tasks .tbl{width:100%}
+@media(max-width:600px){.pd-charter-grid{grid-template-columns:1fr 1fr}.proj-detail-box{max-height:98vh}}
 </style>
 </head>
 <body>
@@ -895,6 +928,8 @@ body{overflow:hidden}
       <div class="s-hint">Publish the PM Projects tab as CSV and paste the URL here</div>
       <div class="s-row"><span class="s-label">Tasks CSV URL</span><input type="text" class="s-input" id="s-pm-task-url" placeholder="Published PM Tasks tab CSV URL"></div>
       <div class="s-hint">Publish the PM Tasks tab as CSV and paste the URL here</div>
+      <div class="s-row"><span class="s-label">Timeline CSV URL</span><input type="text" class="s-input" id="s-pm-timeline-url" placeholder="Published PM Timeline tab CSV URL"></div>
+      <div class="s-hint">Publish the PM Timeline tab as CSV and paste the URL here</div>
     </div>
     <div class="s-group">
       <div class="s-group-title">Admin Password</div>
@@ -1456,7 +1491,7 @@ var FALLBACK_RECV='Project Name,Client,Owner,Contract Total (SAR),Contract Signe
 // ================================================================
 // CONFIG & STATE
 // ================================================================
-var DEFAULTS={url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6ySPs_Sh9goXWlROzcOV0OTKujNAwaDxPu249NMpTgPrNao0XYyMpNuTaVP5k6fmy_46R221aFXNx/pub?gid=992087795&single=true&output=csv',target:40000000,fiscalYear:new Date().getFullYear(),team:[],colors:{},cross:[],refresh:5,password:'',recvUrl:'',lateDays:30,showRecv:'yes',pmProjectsUrl:'',pmTasksUrl:''};
+var DEFAULTS={url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6ySPs_Sh9goXWlROzcOV0OTKujNAwaDxPu249NMpTgPrNao0XYyMpNuTaVP5k6fmy_46R221aFXNx/pub?gid=992087795&single=true&output=csv',target:40000000,fiscalYear:new Date().getFullYear(),team:[],colors:{},cross:[],refresh:5,password:'',recvUrl:'',lateDays:30,showRecv:'yes',pmProjectsUrl:'',pmTasksUrl:'',pmTimelineUrl:''};
 function getConfig(){try{var s=localStorage.getItem('b2g_cfg');if(s){var c=Object.assign({},DEFAULTS,JSON.parse(s));if(!c.fiscalYear)c.fiscalYear=DEFAULTS.fiscalYear;if(!c.password)c.password=DEFAULTS.password;return c}return DEFAULTS}catch(e){return DEFAULTS}}
 function saveCfg(c){try{localStorage.setItem('b2g_cfg',JSON.stringify(c))}catch(e){}}
 var CFG=getConfig();
@@ -1471,7 +1506,7 @@ var ADMIN_PASS=CFG.password||'';
 var PROXIES=[function(u){return'https://corsproxy.io/?'+encodeURIComponent(u)},function(u){return'https://api.allorigins.win/raw?url='+encodeURIComponent(u)}];
 var SEC_NAMES=['Summary','Pipeline','Opportunities','Team','Receivables','Channels','PM Overview','Projects','Tasks'];
 var dashMode='bd';
-var PM_PROJECTS=[],PM_TASKS=[];
+var PM_PROJECTS=[],PM_TASKS=[],PM_TIMELINE=[];
 var PM_SEC_NAMES=['PM Overview','Projects','Tasks'];
 var PIPE_COLS=[{k:'name',l:'Opportunity Name'},{k:'client',l:'Client'},{k:'value',l:'Value (SAR)'},{k:'status',l:'Status'},{k:'prob',l:'Winning Probability'},{k:'stage',l:'Stage'},{k:'owner',l:'Proposal Owner'},{k:'date',l:'Date Submitted'},{k:'days',l:'Days Open'},{k:'channel',l:'Channel'},{k:'next',l:'Next Action'},{k:'priority',l:'Priority'},{k:'risk',l:'Risk'},{k:'notes',l:'Notes'}];
 var sortKey='value',sortDir=-1;
@@ -1705,6 +1740,7 @@ function showSettings(){
   $('s-apps-url').value=CFG.appsScriptUrl||'';
   $('s-pm-proj-url').value=CFG.pmProjectsUrl||'';
   $('s-pm-task-url').value=CFG.pmTasksUrl||'';
+  $('s-pm-timeline-url').value=CFG.pmTimelineUrl||'';
   renderTeamRows();
 }
 function closeSettings(){$('settings-modal').classList.remove('on')}
@@ -1771,6 +1807,7 @@ function applySettings(){
   APPS_SCRIPT_URL=CFG.appsScriptUrl;
   CFG.pmProjectsUrl=($('s-pm-proj-url').value||'').trim();
   CFG.pmTasksUrl=($('s-pm-task-url').value||'').trim();
+  CFG.pmTimelineUrl=($('s-pm-timeline-url').value||'').trim();
   // Update fiscal year badge
   var fyb=$('fy-badge');if(fyb)fyb.textContent=CFG.fiscalYear;
   // Save config
@@ -2605,20 +2642,20 @@ document.addEventListener('click',function(e){
   if(e.target&&e.target.id==='add-opp-modal')closeAddOpp();
   if(e.target&&e.target.id==='detail-modal')closeDetail();
   if(e.target&&e.target.id==='kpi-detail-modal')closeKpiDetail();
+  if(e.target&&e.target.id==='pm-proj-modal')closePMProjectModal();
+  if(e.target&&e.target.id==='pm-task-modal')closePMTaskModal();
+  if(e.target&&e.target.id==='pm-proj-detail')closeProjectDetail();
 });
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
+    if($('gantt-edit-pop')&&$('gantt-edit-pop').classList.contains('on')){closeGanttEdit();return}
+    if($('pm-proj-detail')&&$('pm-proj-detail').classList.contains('on')){closeProjectDetail();return}
     if($('kpi-detail-modal')&&$('kpi-detail-modal').classList.contains('on')){closeKpiDetail();return}
     if($('pm-proj-modal')&&$('pm-proj-modal').style.display==='flex'){closePMProjectModal();return}
     if($('pm-task-modal')&&$('pm-task-modal').style.display==='flex'){closePMTaskModal();return}
     if($('detail-modal')&&$('detail-modal').classList.contains('on')){closeDetail();return}
     closeAddOpp();
   }
-});
-// Backdrop click for PM modals
-document.addEventListener('click',function(e){
-  if(e.target.id==='pm-proj-modal')closePMProjectModal();
-  if(e.target.id==='pm-task-modal')closePMTaskModal();
 });
 
 function detailField(label,value){return'<div class="detail-field"><div class="detail-field-label">'+label+'</div><div class="detail-field-value">'+(value||'—')+'</div></div>'}
@@ -2756,8 +2793,13 @@ function normTask(row){
     notes:g('Notes')||g('notes')||''
   };
 }
+function normTimeline(row){
+  function g(keys){for(var i=0;i<keys.length;i++){var v=row[keys[i]];if(v!=null&&String(v).trim())return String(v).trim()}var rk=Object.keys(row);for(var j=0;j<rk.length;j++){var kl=rk[j].toLowerCase().trim();for(var m=0;m<keys.length;m++){if(kl.indexOf(keys[m].toLowerCase())>=0)return String(row[rk[j]]).trim()}}return''}
+  var ss=g(['Start Date','Start']),es=g(['End Date','End']);
+  return{rowNum:g(['#']),name:g(['Task/Phase','Task','Phase','Name']),project:g(['Project','project']),start:parseD(ss),startStr:ss,end:parseD(es),endStr:es,pct:Math.min(100,Math.max(0,parseInt(g(['% Complete','% complete','pct']))||0)),assignee:g(['Assignee']),notes:g(['Notes'])}
+}
 function loadPMData(){
-  var projUrl=CFG.pmProjectsUrl,taskUrl=CFG.pmTasksUrl;
+  var projUrl=CFG.pmProjectsUrl,taskUrl=CFG.pmTasksUrl,tlUrl=CFG.pmTimelineUrl;
   if(projUrl){
     fetchCSV(projUrl,function(rows){
       PM_PROJECTS=rows.map(normProject).filter(function(p){return p.name});
@@ -2769,6 +2811,11 @@ function loadPMData(){
     fetchCSV(taskUrl,function(rows){
       PM_TASKS=rows.map(normTask).filter(function(t){return t.name});
       if(curTab===8)renderTasks();
+    });
+  }
+  if(tlUrl){
+    fetchCSV(tlUrl,function(rows){
+      PM_TIMELINE=rows.map(normTimeline).filter(function(t){return t.name&&t.project});
     });
   }
 }
@@ -2893,13 +2940,14 @@ function renderProjects(){
   var html='';
   for(var i=0;i<filtered.length;i++){
     var p=filtered[i];
+    var realIdx=PM_PROJECTS.indexOf(p);
     var tagClass=p.status==='Active'?'pm-tag-active':p.status==='On Hold'?'pm-tag-hold':'pm-tag-complete';
     var progColor=p.pctComplete>=80?'var(--green)':p.pctComplete>=50?'var(--accent)':'var(--amber)';
-    html+='<div class="pm-card">'+
+    html+='<div class="pm-card" onclick="openProjectDetail('+realIdx+')" style="cursor:pointer">'+
       '<div style="display:flex;justify-content:space-between;align-items:start">'+
         '<div><div class="pm-card-title">'+esc(p.name)+'</div><div class="pm-card-client">'+esc(p.client)+'</div></div>'+
         '<div style="display:flex;gap:6px;align-items:center"><span class="pm-tag '+tagClass+'">'+esc(p.status)+'</span>'+
-        '<button class="btn-edit-row" onclick="openPMProjectModal('+i+')">&#9998;</button></div>'+
+        '<button class="btn-edit-row" onclick="event.stopPropagation();openPMProjectModal('+realIdx+')">&#9998;</button></div>'+
       '</div>'+
       '<div class="pm-card-meta">'+
         (p.owner?'<span>&#128100; '+esc(p.owner)+'</span>':'')+
@@ -3053,6 +3101,11 @@ function pmWriteBack(action,data,rowNum){
     payload.endDate=data.endDate;payload.status=data.status;
     payload.pctComplete=data.pctComplete;payload.pmOwner=data.owner;
     payload.bdProposal=data.bdProposal;payload.notes=data.notes;
+  } else if(action==='insertTimeline'||action==='updateTimeline'){
+    payload.taskPhase=data.name;payload.project=data.project;
+    payload.startDate=data.startStr;payload.endDate=data.endStr;
+    payload.pctComplete=data.pct;payload.assignee=data.assignee||'';
+    payload.notes=data.notes||'';
   } else {
     payload.taskName=data.name;payload.project=data.project;
     payload.assignee=data.assignee;payload.dueDate=data.dueDate;
@@ -3063,6 +3116,142 @@ function pmWriteBack(action,data,rowNum){
     .then(function(){toast('Sheet updated','ok',3000)})
     .catch(function(err){console.warn('PM write-back failed:',err);toast('Local update saved. Sheet sync failed.','warn',5000)});
 }
+
+// ================================================================
+// PM PROJECT DETAIL MODAL
+// ================================================================
+var pdIdx=null;
+function openProjectDetail(idx){
+  pdIdx=idx;
+  var p=PM_PROJECTS[idx];
+  if(!p)return;
+  $('pd-name').textContent=p.name;
+  var tCls=p.status==='Active'?'pm-tag-active':p.status==='On Hold'?'pm-tag-hold':'pm-tag-complete';
+  $('pd-meta').innerHTML='<span class="pm-tag '+tCls+'">'+esc(p.status)+'</span>&nbsp;&nbsp;'+esc(p.client||'');
+  var overdueTasks=PM_TASKS.filter(function(t){return t.project===p.name&&t.isOverdue}).length;
+  var health=p.isOverdue?'At Risk':overdueTasks>0?'Needs Attention':'On Track';
+  var hCls=p.isOverdue?'pd-health-risk':overdueTasks>0?'pd-health-warn':'pd-health-ok';
+  $('pd-health').className=hCls;$('pd-health').textContent=health;
+  $('pd-edit-btn').onclick=function(){closeProjectDetail();openPMProjectModal(idx)};
+  var daysLeft=p.daysLeft!=null?(p.isOverdue?'Overdue by '+Math.abs(p.daysLeft)+' days':p.daysLeft+' days'):'—';
+  var fields=[
+    ['Client',esc(p.client||'—')],['Contract Value',sar(p.value)],['PM Owner',esc(p.owner||'—')],
+    ['Start Date',esc(p.startDate||'—')],['End Date',esc(p.endDate||'—')],['Days Left',daysLeft],
+    ['% Complete',p.pctComplete+'%'],['Status',esc(p.status||'—')],['BD Proposal',esc(p.bdProposal||'—')]
+  ];
+  var chtml=fields.map(function(f){return'<div class="pd-field"><div class="pd-field-label">'+f[0]+'</div><div class="pd-field-value">'+f[1]+'</div></div>'}).join('');
+  if(p.notes)chtml+='<div class="pd-field" style="grid-column:1/-1"><div class="pd-field-label">Notes</div><div class="pd-field-value" style="font-weight:400;white-space:pre-wrap">'+esc(p.notes)+'</div></div>';
+  $('pd-charter').innerHTML=chtml;
+  renderProjectGantt(p.name);
+  renderProjectTasks(p.name);
+  $('pm-proj-detail').classList.add('on');
+}
+function closeProjectDetail(){$('pm-proj-detail').classList.remove('on')}
+
+function renderProjectGantt(projectName){
+  var el=$('pd-gantt');if(!el)return;
+  var rows=PM_TIMELINE.filter(function(t){return t.project===projectName&&t.start&&t.end});
+  if(!rows.length){
+    el.innerHTML='<div style="font-size:11px;color:var(--tx-d);padding:12px;text-align:center;background:var(--sf3);border-radius:8px">'+(CFG.pmTimelineUrl?'No timeline rows for this project yet.':'Set PM Timeline CSV URL in Settings first.')+'</div>';
+    return;
+  }
+  var minD=rows[0].start.getTime(),maxD=rows[0].end.getTime();
+  rows.forEach(function(r){if(r.start.getTime()<minD)minD=r.start.getTime();if(r.end.getTime()>maxD)maxD=r.end.getTime()});
+  var span=maxD-minD;if(!span)span=86400000;
+  var today=new Date();today.setHours(0,0,0,0);
+  var todayPct=Math.max(0,Math.min(100,((today.getTime()-minD)/span)*100));
+  var html='<div class="gantt-wrap">';
+  // Header ticks (monthly)
+  html+='<div class="gantt-hdr-row">';
+  var tickD=new Date(minD);tickD.setDate(1);
+  while(tickD.getTime()<=maxD){
+    var tp=((tickD.getTime()-minD)/span)*100;
+    html+='<div class="gantt-hdr-tick" style="left:calc(160px + '+tp.toFixed(1)+'%)">'+tickD.toLocaleDateString('en',{month:'short',day:'numeric'})+'</div>';
+    tickD.setMonth(tickD.getMonth()+1);
+  }
+  html+='</div>';
+  // Rows
+  rows.forEach(function(r,ri){
+    var left=((r.start.getTime()-minD)/span)*100;
+    var width=Math.max(1.5,((r.end.getTime()-r.start.getTime())/span)*100);
+    var isDone=r.pct>=100,isOver=r.end<today&&!isDone;
+    var bgColor=isDone?'#2EBD90':isOver?'#EF4444':r.pct>0?'#6F52FF':'rgba(111,82,255,.35)';
+    var safeProj=projectName.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    html+='<div class="gantt-row">';
+    html+='<div class="gantt-row-label" title="'+esc(r.name)+'">'+esc(r.name)+'</div>';
+    html+='<div class="gantt-row-track">';
+    html+='<div class="gantt-today-line" style="left:'+todayPct.toFixed(1)+'%"></div>';
+    html+='<div class="gantt-bar" style="left:'+left.toFixed(1)+'%;width:'+width.toFixed(1)+'%;background:'+bgColor+'" onclick="openGanttEdit('+ri+',\''+safeProj+'\')" title="'+esc(r.name)+': '+esc(r.startStr||'')+' → '+esc(r.endStr||'')+' ('+r.pct+'%)">'+r.pct+'%</div>';
+    html+='</div></div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function renderProjectTasks(projectName){
+  var el=$('pd-tasks');if(!el)return;
+  var tasks=PM_TASKS.filter(function(t){return t.project===projectName});
+  if(!tasks.length){el.innerHTML='<div style="font-size:11px;color:var(--tx-d);padding:12px;text-align:center;background:var(--sf3);border-radius:8px">No tasks linked to this project.</div>';return}
+  var html='<table class="tbl" style="font-size:11.5px"><thead><tr><th>Task</th><th>Assignee</th><th>Due Date</th><th>Status</th><th>Priority</th></tr></thead><tbody>';
+  tasks.forEach(function(t){
+    var sClass=t.status==='Done'?'pm-tag-done':t.status==='In Progress'?'pm-tag-progress':t.status==='Blocked'?'pm-tag-blocked':'pm-tag-todo';
+    var pClass=t.priority==='High'?'tag-high':t.priority==='Low'?'tag-low':'tag-med';
+    html+='<tr><td style="font-weight:600">'+esc(t.name)+'</td><td>'+esc(t.assignee||'—')+'</td><td>'+esc(t.dueDate||'—')+'</td>';
+    html+='<td><span class="pm-tag '+sClass+'">'+esc(t.status)+'</span></td>';
+    html+='<td><span class="tag '+pClass+'">'+esc(t.priority||'—')+'</span></td></tr>';
+  });
+  html+='</tbody></table>';
+  el.innerHTML=html;
+}
+
+// Gantt edit popup
+var gepIdx=null,gepProject=null;
+function openGanttEdit(ri,projectName){
+  var rows=PM_TIMELINE.filter(function(t){return t.project===projectName});
+  var r=rows[ri];if(!r)return;
+  gepIdx=ri;gepProject=projectName;
+  $('gep-title').textContent=r.name;
+  $('gep-name').value=r.name||'';
+  $('gep-start').value=r.startStr||'';
+  $('gep-end').value=r.endStr||'';
+  $('gep-pct').value=r.pct||0;
+  var pop=$('gantt-edit-pop');
+  pop.style.top='50%';pop.style.left='50%';pop.style.transform='translate(-50%,-50%)';
+  pop.classList.add('on');
+}
+function closeGanttEdit(){$('gantt-edit-pop').classList.remove('on')}
+function saveGanttEdit(){
+  var name=($('gep-name').value||'').trim();
+  var start=$('gep-start').value,end=$('gep-end').value;
+  var pct=parseInt($('gep-pct').value);
+  if(!start||!end){alert('Start and End dates required');return}
+  if(end<start){alert('End date must be after Start date');return}
+  pct=isNaN(pct)?0:Math.max(0,Math.min(100,pct));
+  if(gepIdx===null){
+    var newRow={rowNum:null,name:name||(gepProject+' Phase'),project:gepProject,start:parseD(start),startStr:start,end:parseD(end),endStr:end,pct:pct,assignee:'',notes:''};
+    PM_TIMELINE.push(newRow);
+    pmWriteBack('insertTimeline',newRow,null);
+  } else {
+    var rows=PM_TIMELINE.filter(function(t){return t.project===gepProject});
+    var r=rows[gepIdx];
+    if(name)r.name=name;
+    r.startStr=start;r.start=parseD(start);r.endStr=end;r.end=parseD(end);r.pct=pct;
+    pmWriteBack('updateTimeline',r,r.rowNum);
+  }
+  closeGanttEdit();
+  renderProjectGantt(gepProject);
+  toast('Timeline updated','ok');
+}
+function openAddTimelineRow(){
+  var p=PM_PROJECTS[pdIdx];if(!p)return;
+  gepIdx=null;gepProject=p.name;
+  $('gep-title').textContent='New Row — '+p.name;
+  $('gep-name').value='';$('gep-start').value='';$('gep-end').value='';$('gep-pct').value='0';
+  var pop=$('gantt-edit-pop');
+  pop.style.top='50%';pop.style.left='50%';pop.style.transform='translate(-50%,-50%)';
+  pop.classList.add('on');
+}
+
 function _pmSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}}
 
 function _setSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}}
@@ -3719,5 +3908,53 @@ function dragSec(e,idx){e.dataTransfer.setData('text/plain','tab:'+idx)}
   var fyb=$('fy-badge');if(fyb)fyb.textContent=CFG.fiscalYear||new Date().getFullYear();
 })();
 </script>
+
+<!-- PROJECT DETAIL MODAL -->
+<div id="pm-proj-detail">
+  <div class="proj-detail-box">
+    <div class="proj-detail-hdr">
+      <div>
+        <h3 id="pd-name"></h3>
+        <div id="pd-meta" style="margin-top:4px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx-d)"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+        <span id="pd-health"></span>
+        <button class="detail-edit-btn" id="pd-edit-btn">&#9998; Edit</button>
+        <button class="detail-close" onclick="closeProjectDetail()" style="font-size:22px;line-height:1;background:none;border:none;color:var(--tx-d);cursor:pointer;padding:2px 6px">&times;</button>
+      </div>
+    </div>
+    <div class="proj-detail-body">
+      <div class="pd-section">
+        <div class="pd-section-title">Project Charter</div>
+        <div class="pd-charter-grid" id="pd-charter"></div>
+      </div>
+      <div class="pd-section">
+        <div class="pd-section-title">
+          <span>Timeline</span>
+          <button class="btn" style="font-size:10px;padding:4px 10px;opacity:.85" onclick="openAddTimelineRow()">+ Add Row</button>
+        </div>
+        <div id="pd-gantt"></div>
+      </div>
+      <div class="pd-section">
+        <div class="pd-section-title">Tasks</div>
+        <div id="pd-tasks"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GANTT EDIT POPUP -->
+<div id="gantt-edit-pop">
+  <div class="gantt-edit-title" id="gep-title">Edit Row</div>
+  <div class="ao-field" style="margin-bottom:8px"><label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx-d)">Task / Phase Name</label><input type="text" id="gep-name" class="flt" style="width:100%;box-sizing:border-box;padding:7px 10px;font-size:12px"></div>
+  <div class="ao-field" style="margin-bottom:8px"><label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx-d)">Start Date</label><input type="date" id="gep-start" class="flt" style="width:100%;box-sizing:border-box"></div>
+  <div class="ao-field" style="margin-bottom:8px"><label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx-d)">End Date</label><input type="date" id="gep-end" class="flt" style="width:100%;box-sizing:border-box"></div>
+  <div class="ao-field" style="margin-bottom:12px"><label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx-d)">% Complete (0–100)</label><input type="number" id="gep-pct" min="0" max="100" class="flt" style="width:100%;box-sizing:border-box;padding:7px 10px;font-size:12px"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button class="ao-cancel" style="padding:7px 14px" onclick="closeGanttEdit()">Cancel</button>
+    <button class="ao-submit" style="padding:7px 16px;font-size:12px" onclick="saveGanttEdit()">Save</button>
+  </div>
+</div>
+
 </body>
 </html>
