@@ -506,8 +506,12 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 .kan-empty{font-size:10px;color:var(--tx-d);text-align:center;padding:10px 0}
 /* ── Per-stage tables (table mode) ── */
 .pipe-stage-group{margin-bottom:20px}
-.pipe-stage-h{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding-left:2px}
-.pipe-stage-name{font:700 12px 'Poppins',sans-serif;color:var(--tx);letter-spacing:.3px;text-transform:uppercase}
+.pipe-stage-h{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:4px 2px;cursor:pointer;user-select:none;border-radius:var(--r-s);transition:background var(--dur) var(--ease)}
+.pipe-stage-h:hover{background:var(--sf2)}
+.pipe-stage-arrow{font-size:10px;color:var(--tx-d);transition:transform .2s var(--ease);flex-shrink:0}
+.pipe-stage-group:not(.collapsed) .pipe-stage-arrow{transform:rotate(90deg)}
+.pipe-stage-group.collapsed .pipe-stage-body{display:none}
+.pipe-stage-name{font:700 13px 'Poppins',sans-serif;color:var(--tx);letter-spacing:.3px;text-transform:uppercase}
 .pipe-stage-group .tbl-wrap{border-left:3px solid var(--accent);border-radius:var(--r-s)}
 /* ── Workload tab ── */
 .wl-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -1626,7 +1630,7 @@ var OV_DEFAULTS={
   overrides:{},hiddenSections:{},collapsedSections:{},
   sectionOrder:[0,1,2,3,4,5,9],hiddenCols:{},chartTypes:{},
   cardColors:{},logoSrc:null,briefing:'',dayThreshold:90,
-  customBlocks:[],dgOpen:false,actionItems:[]
+  customBlocks:[],dgOpen:false,actionItems:[],collapsedStages:{}
 };
 var OV=loadOV();
 var _fbListening=false;
@@ -3783,8 +3787,11 @@ function renderPipe(){
     function grp(stage,arr){
       if(!arr.length)return'';
       var sum=0;arr.forEach(function(r){if(!r.tbc&&r.val)sum+=r.val});
-      return'<div class="pipe-stage-group"><div class="pipe-stage-h"><span class="pipe-stage-name">'+esc(stage)+'</span><span class="badge">'+arr.length+' &middot; '+(sum?sarS(sum):'TBC')+'</span></div>'+
-        '<div class="tbl-wrap"><table class="tbl"><thead><tr>'+hdr+'</tr></thead><tbody>'+buildRows(arr)+'</tbody></table></div></div>';
+      var collapsed=OV.collapsedStages&&OV.collapsedStages[stage];
+      return'<div class="pipe-stage-group'+(collapsed?' collapsed':'')+'">'+
+        '<div class="pipe-stage-h" onclick="toggleStageGroup(this,\''+stage.replace(/'/g,"\\'")+'\')">'+
+        '<span class="pipe-stage-arrow">&#9654;</span><span class="pipe-stage-name">'+esc(stage)+'</span><span class="badge">'+arr.length+' &middot; '+(sum?sarS(sum):'TBC')+'</span></div>'+
+        '<div class="pipe-stage-body"><div class="tbl-wrap"><table class="tbl"><thead><tr>'+hdr+'</tr></thead><tbody>'+buildRows(arr)+'</tbody></table></div></div></div>';
     }
     var ah='';STAGE_ORDER.forEach(function(s){ah+=grp(s,groups[s])});if(other.length)ah+=grp('Other',other);
     cont.innerHTML=ah||'<div style="color:var(--tx-d);font-size:12px;padding:12px">No active proposals</div>';
@@ -3840,6 +3847,13 @@ function renderPipeBoard(rows){
   var html=STAGE_ORDER.map(function(s){return col(s,groups[s])}).join('');
   if(other.length)html+=col('Other',other);
   board.innerHTML='<div class="kanban">'+html+'</div>';
+}
+function toggleStageGroup(el,stage){
+  if(!OV.collapsedStages)OV.collapsedStages={};
+  var g=el.parentNode,now=!g.classList.contains('collapsed');
+  g.classList.toggle('collapsed',now);
+  if(now)OV.collapsedStages[stage]=true;else delete OV.collapsedStages[stage];
+  queueSave();
 }
 function setPipeView(v){OV.pipeView=v;applyPipeView();queueSave();}
 function applyPipeView(){
