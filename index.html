@@ -484,7 +484,56 @@ body.admin-on .hdr-logo-wrap:hover{outline:2px solid rgba(111,82,255,.4);outline
 .swipe-dot.on{background:var(--purple)}
 .totop{position:fixed;bottom:20px;left:20px;width:36px;height:36px;background:var(--purple);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:15px;display:none;align-items:center;justify-content:center;z-index:50}
 .totop.show{display:flex}
+/* ── Pipeline view toggle + Kanban board ── */
+.pipe-view-toggle{display:inline-flex;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r-s);overflow:hidden;margin-bottom:12px}
+.pv-btn{background:none;border:none;color:var(--tx-m);font:600 11px 'Poppins',sans-serif;padding:6px 16px;cursor:pointer;transition:all var(--dur) var(--ease)}
+.pv-btn:hover{color:var(--tx)}
+.pv-btn.on{background:var(--accent);color:#fff}
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
+.kan-col{flex:0 0 232px;min-width:232px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:11px 11px 13px}
+.kan-col-hdr{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.kan-col-title{font:700 11px 'Poppins',sans-serif;color:var(--tx);letter-spacing:.2px}
+.kan-col-badge{font:700 10px 'IBM Plex Mono',monospace;color:var(--tx-m);background:var(--sf3);border-radius:10px;padding:1px 8px;flex-shrink:0}
+.kan-col-sub{font:600 10px 'IBM Plex Mono',monospace;color:var(--tx-d);margin:2px 0 11px}
+.kan-col-body{display:flex;flex-direction:column;gap:8px}
+.kan-card{background:var(--sf2);border:1px solid var(--bd);border-left:3px solid var(--accent);border-radius:var(--r-s);padding:9px 10px;cursor:pointer;transition:transform var(--dur) var(--ease),background var(--dur) var(--ease)}
+.kan-card:hover{background:var(--sf3);transform:translateY(-1px)}
+.kan-card-name{font:600 12px 'Poppins',sans-serif;color:var(--tx);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kan-card-client{font-size:10px;color:var(--tx-m);margin-bottom:7px}
+.kan-card-meta{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:7px}
+.kan-val{font:700 11px 'IBM Plex Mono',monospace;color:var(--tx);white-space:nowrap}
+.kan-card-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.kan-empty{font-size:10px;color:var(--tx-d);text-align:center;padding:10px 0}
+/* ── Workload tab ── */
+.wl-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wl-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px}
+.wl-card-v{font:800 22px 'IBM Plex Mono',monospace;line-height:1}
+.wl-card-l{font-size:10px;color:var(--tx-m);text-transform:uppercase;letter-spacing:.4px;margin-top:6px}
+.wl-bar{height:8px;background:var(--sf3);border-radius:5px;overflow:hidden}
+.wl-bar-fill{height:100%;border-radius:5px;transition:width .4s var(--ease)}
+@media(max-width:700px){.wl-cards{grid-template-columns:repeat(2,1fr)}}
+/* ── Printable executive report ── */
+#report-root{display:none}
+body.report-mode .app-shell,body.report-mode .totop,body.report-mode #add-opp-modal,body.report-mode #detail-modal{display:none!important}
+body.report-mode #report-root{display:block;background:#fff;color:#111;padding:26px 30px;font-family:'Poppins',sans-serif;max-width:960px;margin:0 auto}
+.rep-h{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #471895;padding-bottom:12px;margin-bottom:20px}
+.rep-title{font-size:23px;font-weight:800;color:#471895;line-height:1.15}
+.rep-sub{font-size:12px;color:#666;margin-top:3px}
+.rep-meta{text-align:right;font-size:11px;color:#666;line-height:1.6}
+.rep-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.rep-kpi{border:1px solid #ddd;border-radius:8px;padding:12px 14px}
+.rep-kpi-v{font-size:19px;font-weight:800;color:#471895;font-family:'IBM Plex Mono',monospace}
+.rep-kpi-l{font-size:9.5px;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.rep-sec{margin-bottom:20px;page-break-inside:avoid}
+.rep-sec-t{font-size:13px;font-weight:700;color:#471895;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:4px}
+.rep-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.rep-tbl th{text-align:left;background:#f5f3fb;color:#471895;padding:6px 8px;border-bottom:1px solid #ddd;font-weight:700}
+.rep-tbl td{padding:5px 8px;border-bottom:1px solid #eee;color:#222}
+.rep-tbl td.num,.rep-tbl th.num{text-align:right;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
+.rep-foot{margin-top:24px;font-size:9px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:8px}
+@page{margin:14mm}
 @media print{
+  body.report-mode{background:#fff}
   body{background:#fff;color:#111;font-size:9pt;font-family:'IBM Plex Sans',sans-serif}
   .sidebar,.topbar .topbar-right,.btn,.totop,.filters,#paste-box,#admin-bar,#lock-btn,.swipe-dots,.src-banner,.sec-ctrl,.add-block,.card-admin-btn,.chart-type-picker,.col-panel,#briefing-wrap:not(.has-content){display:none!important}
   .app-shell{display:block}
@@ -1042,6 +1091,10 @@ body{overflow:hidden}
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       <span class="rbtn-txt">Refresh</span>
     </button>
+    <button class="btn" id="report-btn" onclick="openReport()" title="Generate a printable executive report (save as PDF)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Report
+    </button>
     <button class="btn btn-add-opp" id="add-opp-btn" onclick="openAddOpp()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Opportunity
@@ -1110,6 +1163,12 @@ body{overflow:hidden}
       <select class="flt" id="f-ow" onchange="renderPipe()"><option value="">Owner</option></select>
       <select class="flt" id="f-pr" onchange="renderPipe()"><option value="">Probability</option><option>High</option><option>Low</option></select>
     </div>
+    <div class="pipe-view-toggle">
+      <button id="pv-board" class="pv-btn on" onclick="setPipeView('board')">Board</button>
+      <button id="pv-table" class="pv-btn" onclick="setPipeView('table')">Table</button>
+    </div>
+    <div id="pipe-board"></div>
+    <div id="pipe-table-view">
     <div class="tbl-wrap"><table class="tbl" id="tbl-p"><thead><tr id="pipe-hdr"></tr></thead><tbody id="tb-p"></tbody></table></div>
     <div id="pipe-closed-wrap" style="margin-top:24px;display:none">
       <div class="dg-toggle open" id="pipe-closed-toggle" onclick="this.classList.toggle('open');var w=document.getElementById('pipe-closed-body');w.style.display=this.classList.contains('open')?'block':'none'" style="margin-bottom:10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--tx-m);display:flex;align-items:center;gap:6px">
@@ -1120,6 +1179,7 @@ body{overflow:hidden}
       <div id="pipe-closed-body">
         <div class="tbl-wrap"><table class="tbl" id="tbl-pi"><thead><tr id="pipe-hdr-i"></tr></thead><tbody id="tb-pi"></tbody></table></div>
       </div>
+    </div>
     </div>
   </div></section>
   <div class="add-block" onclick="addBlock(1)">+ Add block</div>
@@ -1226,7 +1286,19 @@ body{overflow:hidden}
       <th>Task</th><th>Project</th><th>Assignee</th><th>Due Date</th><th>Status</th><th>Priority</th><th class="pipe-act-th"></th>
     </tr></thead><tbody id="tb-tasks"></tbody></table></div>
   </div></section>
+
+  <!-- Section 9: Workload -->
+  <section class="sec" id="s-9" style="display:none"><div class="sec-body" id="sb-9">
+    <h2 class="sec-title">Team Workload <span class="badge" id="b-workload"></span> <span style="font-size:10px;color:var(--tx-d);font-weight:400;margin-left:4px">Active proposals (Pending) &amp; value in play per owner</span></h2>
+    <div class="wl-cards" id="wl-cards"></div>
+    <div class="tbl-wrap" style="margin-top:14px"><table class="tbl" id="tbl-wl"><thead><tr>
+      <th>Proposal Owner</th><th>Active</th><th>Value in Play</th><th>Overdue</th><th>High Priority</th><th style="min-width:160px">Relative Load</th>
+    </tr></thead><tbody id="tb-wl"></tbody></table></div>
+  </div></section>
 </div>
+
+<!-- PRINTABLE REPORT (populated by buildReport) -->
+<div id="report-root"></div>
 
 <!-- ADD OPPORTUNITY MODAL -->
 <div id="add-opp-modal">
@@ -1504,7 +1576,7 @@ var P={accent:'#7C5CFF',accentA:'rgba(124,92,255,.18)',accentB:'rgba(124,92,255,
 var ALL=[],DATA=[],DATA_FULL=[],CARRIED=[],CARRIED_FULL=[],RECV=[],RECV_FULL=[],charts={},curTab=0,refreshTimer=null,adminMode=false;
 var ADMIN_PASS=CFG.password||'';
 var PROXIES=[function(u){return'https://corsproxy.io/?'+encodeURIComponent(u)},function(u){return'https://api.allorigins.win/raw?url='+encodeURIComponent(u)}];
-var SEC_NAMES=['Summary','Pipeline','Opportunities','Team','Receivables','Channels','PM Overview','Projects','Tasks'];
+var SEC_NAMES=['Summary','Pipeline','Opportunities','Team','Receivables','Channels','PM Overview','Projects','Tasks','Workload'];
 var dashMode='bd';
 var PM_PROJECTS=[],PM_TASKS=[],PM_TIMELINE=[];
 var PM_SEC_NAMES=['PM Overview','Projects','Tasks'];
@@ -1534,7 +1606,7 @@ try{
 // OVERRIDE STATE (persisted to Firebase + localStorage fallback)
 var OV_DEFAULTS={
   overrides:{},hiddenSections:{},collapsedSections:{},
-  sectionOrder:[0,1,2,3,4,5],hiddenCols:{},chartTypes:{},
+  sectionOrder:[0,1,2,3,4,5,9],hiddenCols:{},chartTypes:{},
   cardColors:{},logoSrc:null,briefing:'',dayThreshold:90,
   customBlocks:[],dgOpen:false,actionItems:[]
 };
@@ -2050,6 +2122,8 @@ var SEC_ICONS=[
   '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
   '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'
 ];
+// Workload tab (section index 9) icon — gauge/activity
+SEC_ICONS[9]='<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
 var PM_NAV_ICONS=[
   '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
   '<svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
@@ -2077,10 +2151,13 @@ function buildNav(){
     if(sy)sy.textContent=CFG.fiscalYear||2026;
     return;
   }
-  // BD navigation — only show sections 0 (BD Summary) and 1 (Pipeline)
-  var BD_VISIBLE=[0,1];
+  // BD navigation — Summary (0), Pipeline (1) and Workload (9)
+  var BD_VISIBLE=[0,1,9];
   var order=OV.sectionOrder;
-  var groupLabels={0:'Overview'};
+  // Migrate older saved sectionOrders so newly added BD sections (e.g. Workload) appear
+  var _chg=false;BD_VISIBLE.forEach(function(v){if(order.indexOf(v)<0){order.push(v);_chg=true}});
+  if(_chg)queueSave();
+  var groupLabels={0:'Overview',9:'Team'};
   for(var i=0;i<order.length;i++){
     var idx=order[i];
     // Skip sections not in BD visible list
@@ -2127,7 +2204,7 @@ function buildNav(){
 }
 function goTab(i){
   curTab=i;
-  for(var s=0;s<9;s++){
+  for(var s=0;s<10;s++){
     var sec=document.getElementById('s-'+s);
     if(sec){if(s===i){sec.classList.add('on');sec.style.display='';}else{sec.classList.remove('on');sec.style.display='none';}}
   }
@@ -2141,6 +2218,7 @@ function goTab(i){
   if(i===6)renderPMOverview();
   if(i===7)renderProjects();
   if(i===8)renderTasks();
+  if(i===9)renderWorkload();
   // Close sidebar drawer on mobile after navigation
   closeSidebarMobile();
 }
@@ -2161,8 +2239,21 @@ function setupDots(){
 // ================================================================
 // COLUMN TOGGLE PANEL
 // ================================================================
+// Cleaner default: show only essentials in the table (full detail is one click away).
+// Applied once per user; never overrides columns the user has explicitly toggled.
+var DEFAULT_HIDDEN_PIPE=['status','prob','date','channel','next','priority','risk','notes'];
+function applyPipeColDefaults(){
+  if(OV.pipeColsDefaulted)return;
+  DEFAULT_HIDDEN_PIPE.forEach(function(k){
+    for(var i=0;i<PIPE_COLS.length;i++){
+      if(PIPE_COLS[i].k===k&&OV.hiddenCols['pipe:'+i]===undefined){OV.hiddenCols['pipe:'+i]=true}
+    }
+  });
+  OV.pipeColsDefaulted=true;
+}
 function buildColPanel(){
   var panel=$('col-panel-pipe');if(!panel)return;
+  applyPipeColDefaults();
   panel.innerHTML='<strong style="margin-right:6px;color:var(--tx-d)">Columns:</strong>';
   PIPE_COLS.forEach(function(col,i){
     var checked=!OV.hiddenCols['pipe:'+i];
@@ -2225,7 +2316,7 @@ function norm(r){
   var activeCol=activeRaw.toLowerCase().trim();
   var hasActiveCol=activeRaw!=='';
   var isActive=!hasActiveCol||activeCol==='active'||activeCol==='yes'||activeCol==='true'||activeCol==='1';
-  var stage=g(['Stage']);
+  var stage=normStage(g(['Stage']));
   var canonSt=normS(rawSt);
   // If Qualified + Stage is Contract Signed → treat as Won
   if(canonSt==='Pending'&&stage==='Contract Signed')canonSt='Won';
@@ -2251,6 +2342,17 @@ function normS(s){if(!s)return'';var l=s.toLowerCase().trim().replace(/[\s_-]+/g
   'cancelled by aanaab':'Canceled'
 }[l]||s}
 function normP(p){if(!p)return'';var l=p.toLowerCase().trim();return{high:'High',medium:'Medium',med:'Medium',low:'Low'}[l]||p}
+// Map any raw Stage text to the canonical STAGE_ORDER label (mirrors tagStage keyword logic),
+// so data, the Add/Edit dropdown, the Kanban board and the stage stepper all agree.
+function normStage(s){if(!s)return'';var l=s.toLowerCase();
+  if(l.indexOf('qualification')>=0)return'Under Qualification';
+  if(l.indexOf('scoping')>=0)return'Scoping';
+  if(l.indexOf('under-development')>=0||l.indexOf('under development')>=0||l.indexOf('develop')>=0||l.indexOf('preparation')>=0||l.indexOf('draft')>=0)return'Proposal Under-Development';
+  if(l.indexOf('submit')>=0)return'Proposal Submitted';
+  if(l.indexOf('approv')>=0)return'Proposal Approved';
+  if(l.indexOf('po received')>=0||l.indexOf('po ')>=0||l.indexOf('purchase order')>=0)return'PO Received';
+  if(l.indexOf('contract')>=0||l.indexOf('signed')>=0||l.indexOf('award')>=0||l.indexOf('won')>=0)return'Contract Signed';
+  return s;}
 function sar(n){if(n==null)return'TBC';return'SAR '+n.toLocaleString('en-US',{maximumFractionDigits:0})+' <span style="font-size:9px;color:var(--tx-d);font-weight:400">excl. VAT</span>'}
 function sarS(n){if(n==null)return'TBC';return'SAR '+n.toLocaleString('en-US',{maximumFractionDigits:0})}
 function sarM(n){if(n==null)return'TBC';if(Math.abs(n)>=1e6)return'SAR '+(n/1e6).toFixed(1)+'M';if(Math.abs(n)>=1e3)return'SAR '+(n/1e3).toFixed(0)+'K';return'SAR '+n.toLocaleString('en-US',{maximumFractionDigits:0})}
@@ -2606,6 +2708,7 @@ function renderAll(){
   try{renderChan()}catch(e){console.error('Chan:',e)}
   try{renderActionItems()}catch(e){console.error('AI:',e)}
   try{renderRecv()}catch(e){console.error('Recv:',e)}
+  try{renderWorkload()}catch(e){console.error('WL:',e)}
   if(adminMode)applyAdminUI();
   renderCustomBlocks();
   // Briefing visibility
@@ -2623,9 +2726,8 @@ function openAddOpp(){
   $('ao-modal-title').textContent='Add Opportunity';
   var iso=new Date().toISOString().slice(0,10);
   $('ao-date').value=iso;
-  var owSel=$('ao-owner');
-  owSel.innerHTML='<option value="" disabled selected>Select owner</option>'+(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
   $('add-opp-form').reset();
+  fillOwnerSelect('');
   $('ao-date').value=iso;
   $('ao-status-msg').textContent='';
   $('ao-status-msg').style.color='';
@@ -3256,29 +3358,49 @@ function _pmSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.leng
 
 function _setSelVal(id,val){var s=$(id);if(!s)return;for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}}
 
+// Select an option by value; if the stored value isn't one of the standard choices
+// (e.g. legacy "Medium"), inject it so the dropdown still reflects the saved data.
+function selSet(id,val){var s=$(id);if(!s)return;
+  if(val==null||val===''){s.selectedIndex=0;return}
+  for(var i=0;i<s.options.length;i++){if(s.options[i].value===val){s.selectedIndex=i;return}}
+  var o=document.createElement('option');o.value=val;o.textContent=val;s.appendChild(o);s.value=val;}
+// Status is stored normalized (Pending/Won/Lost/Canceled/...) but the dropdown lists the
+// sheet's raw labels (Qualified/Not Qualified/...). Match on raw first, then normalized, else inject.
+function setStatusSel(r){var s=$('ao-status');if(!s)return;
+  var raw=r.rawStatus,st=r.status,i;
+  if(raw){for(i=0;i<s.options.length;i++){if(s.options[i].value===raw){s.selectedIndex=i;return}}}
+  for(i=0;i<s.options.length;i++){var ov=s.options[i].value;if(ov&&normS(ov)===st){s.selectedIndex=i;return}}
+  selSet('ao-status',raw||st);}
+// Owner options = union of configured team + every owner present in the data (+ the current one).
+function fillOwnerSelect(selected){var s=$('ao-owner');if(!s)return;
+  var set={},list=[];
+  (CFG.team||[]).forEach(function(m){if(m&&!set[m]){set[m]=1;list.push(m)}});
+  for(var i=0;i<ALL.length;i++){var o=ALL[i].owner;if(o&&!set[o]){set[o]=1;list.push(o)}}
+  if(selected&&!set[selected]){set[selected]=1;list.push(selected)}
+  s.innerHTML='<option value="" disabled'+(selected?'':' selected')+'>Select owner</option>'+
+    list.map(function(m){return'<option value="'+esc(m)+'"'+(m===selected?' selected':'')+'>'+esc(m)+'</option>'}).join('');}
+
 function openEditOpp(allIdx){
   var r=ALL[allIdx];if(!r)return;
   var modal=$('add-opp-modal');if(!modal)return;
   editMode=true;editingRow=r;
   $('ao-modal-title').textContent='Edit Opportunity';
   $('ao-submit-txt').textContent='Save Changes';
-  var owSel=$('ao-owner');
-  owSel.innerHTML='<option value="" disabled>Select owner</option>'+(CFG.team||[]).map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join('');
+  fillOwnerSelect(r.owner||'');
   $('ao-name').value=r.name||'';
   $('ao-client').value=r.client||'';
   $('ao-contact').value=r.contact||'';
   $('ao-date').value=r.dateStr||'';
   $('ao-value').value=r.val||'';
-  _setSelVal('ao-stage',r.stage||'Proposal Submitted');
+  selSet('ao-stage',normStage(r.stage)||'Proposal Submitted');
   $('ao-next').value=r.next||'';
   $('ao-notes').value=r.notes||'';
-  _setSelVal('ao-prob',r.prob);
-  _setSelVal('ao-status',r.status);
+  selSet('ao-prob',r.prob);
+  setStatusSel(r);
   _setSelVal('ao-active',r.isActive?'Active':'Inactive');
-  _setSelVal('ao-channel',r.channel);
-  _setSelVal('ao-owner',r.owner);
-  _setSelVal('ao-priority',r.priority);
-  _setSelVal('ao-risk',r.risk);
+  selSet('ao-channel',r.channel);
+  selSet('ao-priority',r.priority);
+  selSet('ao-risk',r.risk);
   $('ao-status-msg').textContent='';
   $('ao-submit-btn').disabled=false;
   modal.classList.add('on');
@@ -3563,7 +3685,29 @@ function renderTeamChart(){
   ]},{plugins:{legend:{labels:{color:'#C4B5FD',usePointStyle:true,pointStyleWidth:8,font:{size:10,family:'Poppins'}}},tooltip:{callbacks:{label:function(c){if(c.dataset.label==='Value (SAR M)')return'Value: '+c.parsed.y+'M SAR';return c.dataset.label+': '+c.parsed.y}}}},scales:{x:{ticks:{color:'#C4B5FD',font:{family:'Poppins'}},grid:{display:false}},y:{ticks:{color:'rgba(151,130,255,.65)',stepSize:1,font:{family:'IBM Plex Mono',size:10}},grid:{color:'rgba(151,130,255,.08)'}},y2:{position:'right',ticks:{color:P.amber,callback:function(v){return v+'M'},font:{family:'IBM Plex Mono',size:10}},grid:{display:false}}}});
 }
 
+// Shared pipeline filtering — used by both the table (renderPipe) and the Kanban board (renderPipeBoard)
+function getPipeRows(){
+  var q=($('f-q').value||'').toLowerCase(),fs=$('f-st').value,fo=$('f-ow').value,fp=$('f-pr').value;
+  var all=DATA.slice();
+  if(q)all=all.filter(function(r){return(r.name+r.client+r.owner+r.next).toLowerCase().indexOf(q)>=0});
+  if(fo)all=all.filter(function(r){return r.owner===fo});
+  if(fp)all=all.filter(function(r){return r.prob===fp});
+  var hasActiveColumn=all.length>0&&all[0].hasActiveCol;
+  var INACTIVE_ST={Won:1,Lost:1,Canceled:1,'Carried Over':1,Inactive:1};
+  var dActive,dClosed;
+  if(fs){
+    var filtered=all.filter(function(r){return r.status===fs});
+    if(hasActiveColumn){dActive=filtered.filter(function(r){return r.isActive});dClosed=filtered.filter(function(r){return !r.isActive});}
+    else{dActive=INACTIVE_ST[fs]?[]:filtered;dClosed=INACTIVE_ST[fs]?filtered:[];}
+  } else {
+    if(hasActiveColumn){dActive=all.filter(function(r){return r.isActive});dClosed=all.filter(function(r){return !r.isActive});}
+    else{dActive=all.filter(function(r){return !INACTIVE_ST[r.status]});dClosed=all.filter(function(r){return INACTIVE_ST[r.status]});}
+  }
+  return{dActive:dActive,dClosed:dClosed};
+}
+
 function renderPipe(){
+  applyPipeColDefaults();
   // Build header
   var hdr=$('pipe-hdr');hdr.innerHTML='';
   PIPE_COLS.forEach(function(col,i){
@@ -3576,34 +3720,7 @@ function renderPipe(){
   });
   var acth=document.createElement('th');acth.className='pipe-act-th';hdr.appendChild(acth);
 
-  var q=($('f-q').value||'').toLowerCase(),fs=$('f-st').value,fo=$('f-ow').value,fp=$('f-pr').value;
-  var all=DATA.slice();
-  if(q)all=all.filter(function(r){return(r.name+r.client+r.owner+r.next).toLowerCase().indexOf(q)>=0});
-  if(fo)all=all.filter(function(r){return r.owner===fo});
-  if(fp)all=all.filter(function(r){return r.prob===fp});
-
-  // Check if any row has the Active/Inactive column from the sheet
-  var hasActiveColumn=all.length>0&&all[0].hasActiveCol;
-  var INACTIVE_ST={Won:1,Lost:1,Canceled:1,'Carried Over':1,Inactive:1};
-  var dActive,dClosed;
-  if(fs){
-    var filtered=all.filter(function(r){return r.status===fs});
-    if(hasActiveColumn){
-      dActive=filtered.filter(function(r){return r.isActive});
-      dClosed=filtered.filter(function(r){return !r.isActive});
-    } else {
-      dActive=INACTIVE_ST[fs]?[]:filtered;
-      dClosed=INACTIVE_ST[fs]?filtered:[];
-    }
-  } else {
-    if(hasActiveColumn){
-      dActive=all.filter(function(r){return r.isActive});
-      dClosed=all.filter(function(r){return !r.isActive});
-    } else {
-      dActive=all.filter(function(r){return !INACTIVE_ST[r.status]});
-      dClosed=all.filter(function(r){return INACTIVE_ST[r.status]});
-    }
-  }
+  var _pr=getPipeRows(),dActive=_pr.dActive,dClosed=_pr.dClosed;
 
   function sortRows(arr){
     arr.sort(function(a,b){var va,vb;switch(sortKey){case'value':va=a.val||0;vb=b.val||0;break;case'date':va=a.date?a.date.getTime():0;vb=b.date?b.date.getTime():0;break;case'days':va=days(a.date)||0;vb=days(b.date)||0;break;case'name':return sortDir*a.name.localeCompare(b.name);case'client':return sortDir*(a.client||'').localeCompare(b.client||'');case'status':return sortDir*a.status.localeCompare(b.status);case'prob':va={High:3,Medium:2,Low:1}[a.prob]||0;vb={High:3,Medium:2,Low:1}[b.prob]||0;break;case'owner':return sortDir*(a.owner||'').localeCompare(b.owner||'');case'priority':va={High:3,Medium:2,Low:1}[a.priority]||0;vb={High:3,Medium:2,Low:1}[b.priority]||0;break;case'risk':va={High:3,Medium:2,Low:1}[a.risk]||0;vb={High:3,Medium:2,Low:1}[b.risk]||0;break;case'notes':return sortDir*(a.notes||'').localeCompare(b.notes||'');default:va=a.val||0;vb=b.val||0}return sortDir*(va-vb)});
@@ -3664,8 +3781,131 @@ function renderPipe(){
   } else {
     closedWrap.style.display='none';
   }
+  renderPipeBoard(dActive);
+  applyPipeView();
 }
 function doSort(k){if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}renderPipe()}
+
+// ── Pipeline Kanban board (grouped by canonical stage) ──
+function renderPipeBoard(rows){
+  var board=$('pipe-board');if(!board)return;
+  if(rows===undefined)rows=getPipeRows().dActive;
+  var groups={};STAGE_ORDER.forEach(function(s){groups[s]=[]});var other=[];
+  rows.forEach(function(r){var s=normStage(r.stage);(groups[s]?groups[s]:other).push(r)});
+  function card(r){
+    var idx=ALL.indexOf(r);
+    var dy=days(r.date),ov=r.status==='Pending'&&dy!=null&&dy>OV.dayThreshold;
+    return'<div class="kan-card" onclick="openDetail('+idx+')">'+
+      '<div class="kan-card-name" dir="auto">'+esc(r.name)+'</div>'+
+      '<div class="kan-card-client">'+esc(r.client)+'</div>'+
+      '<div class="kan-card-meta"><span class="kan-val">'+(r.tbc?'TBC':sarS(r.val))+'</span>'+(r.prob?tagP(r.prob):'')+'</div>'+
+      '<div class="kan-card-foot">'+tagOwner(r.owner)+(ov?'<span class="overdue">OVERDUE</span>':'')+'</div></div>';
+  }
+  function col(stage,arr){
+    arr=arr.slice().sort(function(a,b){return(b.val||0)-(a.val||0)});
+    var sum=0;arr.forEach(function(r){if(!r.tbc&&r.val)sum+=r.val});
+    var body=arr.length?arr.map(card).join(''):'<div class="kan-empty">No deals</div>';
+    return'<div class="kan-col"><div class="kan-col-hdr"><span class="kan-col-title">'+esc(stage)+'</span><span class="kan-col-badge">'+arr.length+'</span></div>'+
+      '<div class="kan-col-sub">'+(sum?sarM(sum):'&mdash;')+'</div><div class="kan-col-body">'+body+'</div></div>';
+  }
+  var html=STAGE_ORDER.map(function(s){return col(s,groups[s])}).join('');
+  if(other.length)html+=col('Other',other);
+  board.innerHTML='<div class="kanban">'+html+'</div>';
+}
+function setPipeView(v){OV.pipeView=v;applyPipeView();queueSave();}
+function applyPipeView(){
+  var v=OV.pipeView||'board';
+  var b=$('pipe-board'),t=$('pipe-table-view'),bb=$('pv-board'),tb=$('pv-table');
+  if(b)b.style.display=v==='board'?'block':'none';
+  if(t)t.style.display=v==='table'?'block':'none';
+  if(bb)bb.classList.toggle('on',v==='board');
+  if(tb)tb.classList.toggle('on',v==='table');
+}
+
+// ── Workload tab: capacity & balance per owner ──
+function computeWorkload(){
+  var set={},owners=[];
+  (CFG.team||[]).forEach(function(m){if(m&&!set[m]){set[m]=1;owners.push(m)}});
+  DATA.forEach(function(r){var o=r.owner;if(o&&!set[o]){set[o]=1;owners.push(o)}});
+  var stats=owners.map(function(name){
+    var mine=DATA.filter(function(r){return r.owner===name});
+    var active=mine.filter(function(r){return r.status==='Pending'});
+    var inPlay=0;mine.forEach(function(r){if((r.status==='Pending'||r.status==='Carried Over')&&r.val)inPlay+=r.val});
+    var overdue=active.filter(function(r){var d=days(r.date);return d!=null&&d>OV.dayThreshold}).length;
+    var high=active.filter(function(r){return r.priority==='High'}).length;
+    return{name:name,active:active.length,inPlay:inPlay,overdue:overdue,high:high};
+  }).filter(function(s){return s.active>0||s.inPlay>0});
+  stats.sort(function(a,b){return b.active-a.active||b.inPlay-a.inPlay});
+  var maxA=1,totActive=0,totPlay=0,totOver=0;
+  stats.forEach(function(s){if(s.active>maxA)maxA=s.active;totActive+=s.active;totPlay+=s.inPlay;totOver+=s.overdue});
+  return{stats:stats,maxA:maxA,totActive:totActive,totPlay:totPlay,totOver:totOver,mean:stats.length?totActive/stats.length:0};
+}
+function renderWorkload(){
+  var tb=$('tb-wl');if(!tb)return;
+  var w=computeWorkload(),stats=w.stats,maxA=w.maxA,totActive=w.totActive,totPlay=w.totPlay,totOver=w.totOver,mean=w.mean;
+  if($('b-workload'))$('b-workload').textContent=stats.length+' owners · '+totActive+' active';
+  var cards=[['Active Proposals',totActive,'var(--blue)'],['Value in Play',sarM(totPlay),'var(--accent)'],['Overdue',totOver,totOver?'var(--red)':'var(--green)'],['Owners',stats.length,'var(--teal)']];
+  if($('wl-cards'))$('wl-cards').innerHTML=cards.map(function(c){return'<div class="wl-card"><div class="wl-card-v" style="color:'+c[2]+'">'+c[1]+'</div><div class="wl-card-l">'+c[0]+'</div></div>'}).join('');
+  tb.innerHTML=stats.map(function(s){
+    var pct=Math.round(s.active/maxA*100);
+    var over=mean>0&&s.active>mean*1.5;
+    return'<tr>'+
+      '<td>'+tagOwner(s.name)+(over?' <span class="overdue" style="background:var(--amber)">HIGH LOAD</span>':'')+'</td>'+
+      '<td style="font-weight:700">'+s.active+'</td>'+
+      '<td style="white-space:nowrap;font-weight:600">'+(s.inPlay?sarS(s.inPlay):'—')+'</td>'+
+      '<td>'+(s.overdue?'<span class="overdue">'+s.overdue+'</span>':'0')+'</td>'+
+      '<td>'+s.high+'</td>'+
+      '<td><div class="wl-bar"><div class="wl-bar-fill" style="width:'+pct+'%;background:'+(over?'var(--amber)':'var(--accent)')+'"></div></div></td>'+
+    '</tr>';
+  }).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--tx-d);padding:16px">No active proposals</td></tr>';
+}
+
+// ── Printable executive report ──
+function _rsum(a){var t=0;a.forEach(function(r){if(r.val)t+=r.val});return t}
+function openReport(){
+  $('report-root').innerHTML=buildReport();
+  document.body.classList.add('report-mode');
+  window.scrollTo(0,0);
+  function done(){document.body.classList.remove('report-mode');window.removeEventListener('afterprint',done)}
+  window.addEventListener('afterprint',done);
+  setTimeout(function(){window.print()},150);
+}
+function buildReport(){
+  var fy=$('g-yr').value||CFG.fiscalYear||(new Date().getFullYear());
+  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var pend=DATA.filter(function(r){return r.status==='Pending'});
+  var won=DATA.filter(function(r){return r.status==='Won'});
+  var lost=DATA.filter(function(r){return r.status==='Lost'});
+  var secured=DATA.filter(function(r){return r.status==='Carried Over'});
+  var pipeV=_rsum(pend),wonV=_rsum(won),securedV=_rsum(secured);
+  var decided=won.length+lost.length;
+  var winRate=decided?Math.round(won.length/decided*100):0;
+  var target=CFG.target||0,achieved=wonV+securedV,prog=target?Math.round(achieved/target*100):0;
+  var kpis=[
+    ['Active Pipeline',sarM(pipeV),pend.length+' proposals'],
+    ['Won + Secured',sarM(achieved),(won.length+secured.length)+' deals'],
+    ['Win Rate',winRate+'%',won.length+' won / '+lost.length+' lost'],
+    ['Target Progress',target?prog+'%':'—',target?('of '+sarM(target)):'no target set']
+  ];
+  var kpiHtml=kpis.map(function(k){return'<div class="rep-kpi"><div class="rep-kpi-v">'+k[1]+'</div><div class="rep-kpi-l">'+k[0]+'</div><div class="rep-kpi-l" style="text-transform:none;color:#999;margin-top:2px">'+k[2]+'</div></div>'}).join('');
+  var stageRows=STAGE_ORDER.map(function(st){var arr=pend.filter(function(r){return normStage(r.stage)===st});return{st:st,n:arr.length,v:_rsum(arr)}}).filter(function(x){return x.n>0});
+  var stageHtml=stageRows.length?stageRows.map(function(x){return'<tr><td>'+esc(x.st)+'</td><td class="num">'+x.n+'</td><td class="num">'+sarS(x.v)+'</td></tr>'}).join(''):'<tr><td colspan="3" style="color:#999">No active proposals</td></tr>';
+  var top=pend.filter(function(r){return r.val}).sort(function(a,b){return b.val-a.val}).slice(0,10);
+  var topHtml=top.length?top.map(function(r){return'<tr><td>'+esc(r.name)+'</td><td>'+esc(r.client)+'</td><td>'+esc(r.owner)+'</td><td class="num">'+sarS(r.val)+'</td><td>'+esc(r.prob||'—')+'</td></tr>'}).join(''):'<tr><td colspan="5" style="color:#999">None</td></tr>';
+  var risks=pend.filter(function(r){var d=days(r.date);return d!=null&&d>OV.dayThreshold}).sort(function(a,b){return(days(b.date)||0)-(days(a.date)||0)});
+  var riskHtml=risks.length?risks.map(function(r){return'<tr><td>'+esc(r.name)+'</td><td>'+esc(r.owner)+'</td><td class="num">'+days(r.date)+' days</td><td>'+esc(r.next||'—')+'</td></tr>'}).join(''):'<tr><td colspan="4" style="color:#16a34a">No proposals overdue beyond '+OV.dayThreshold+' days</td></tr>';
+  var ws=computeWorkload().stats;
+  var ownerHtml=ws.length?ws.map(function(s){return'<tr><td>'+esc(s.name)+'</td><td class="num">'+s.active+'</td><td class="num">'+(s.inPlay?sarS(s.inPlay):'—')+'</td><td class="num">'+s.overdue+'</td><td class="num">'+s.high+'</td></tr>'}).join(''):'<tr><td colspan="5" style="color:#999">No active owners</td></tr>';
+  return''+
+  '<div class="rep-h"><div><div class="rep-title">Aanaab — B2G Business Development Report</div><div class="rep-sub">منصة أعناب · Government &amp; Enterprise Pipeline</div></div>'+
+  '<div class="rep-meta">Fiscal Year <strong>'+esc(String(fy))+'</strong><br>Generated '+today+'</div></div>'+
+  '<div class="rep-kpis">'+kpiHtml+'</div>'+
+  '<div class="rep-sec"><div class="rep-sec-t">Pipeline by Stage (Active)</div><table class="rep-tbl"><thead><tr><th>Stage</th><th class="num">Deals</th><th class="num">Value (SAR)</th></tr></thead><tbody>'+stageHtml+'</tbody></table></div>'+
+  '<div class="rep-sec"><div class="rep-sec-t">Top Active Opportunities</div><table class="rep-tbl"><thead><tr><th>Opportunity</th><th>Client</th><th>Owner</th><th class="num">Value (SAR)</th><th>Prob.</th></tr></thead><tbody>'+topHtml+'</tbody></table></div>'+
+  '<div class="rep-sec"><div class="rep-sec-t">Risks — Overdue Proposals (&gt; '+OV.dayThreshold+' days)</div><table class="rep-tbl"><thead><tr><th>Opportunity</th><th>Owner</th><th class="num">Days Open</th><th>Next Action</th></tr></thead><tbody>'+riskHtml+'</tbody></table></div>'+
+  '<div class="rep-sec"><div class="rep-sec-t">Workload by Owner</div><table class="rep-tbl"><thead><tr><th>Owner</th><th class="num">Active</th><th class="num">Value in Play</th><th class="num">Overdue</th><th class="num">High Priority</th></tr></thead><tbody>'+ownerHtml+'</tbody></table></div>'+
+  '<div class="rep-foot">Generated from the Aanaab B2G Dashboard · '+today+' · Confidential</div>';
+}
 
 function renderOpp(){
   var allPend=DATA.filter(function(r){return r.status==='Pending'&&!isDisregarded(r)});
