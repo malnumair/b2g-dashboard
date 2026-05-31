@@ -1,0 +1,15 @@
+/* ============================================================
+   Aanaab — design-token foundation (fonts + brand colors)
+   Consumed by dash.css via var(--font-*) / var(--color-*).
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Type */
+  --font-en: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-ar: 'IBM Plex Sans Arabic', 'Poppins', system-ui, sans-serif;
+
+  /* Brand */
+  --color-primary:   #471895;  /* Aanaab purple */
+  --color-secondary: #2EBD90;  /* Aanaab green  */
+}
